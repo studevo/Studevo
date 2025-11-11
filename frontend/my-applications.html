@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Applications — StudyConnect</title>
+  <style>
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    body { 
+      font-family: 'Segoe UI', sans-serif; 
+      background: #f8fafc; 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { 
+      width: 95%;
+      max-width: 1400px; 
+      margin: 0 auto; 
+      padding: 20px;
+      flex: 1;
+    }
+    header { 
+      background: white; 
+      padding: 15px 0; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    }
+    .header-content { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      width: 95%;
+      max-width: 1400px; 
+      margin: 0 auto; 
+    }
+    .logo { 
+      font-size: 24px; 
+      font-weight: 800; 
+      color: #3b82f6; 
+    }
+    .logo span { 
+      color: #1e40af; 
+    }
+    .user-menu { 
+      display: flex; 
+      align-items: center; 
+      gap: 15px; 
+    }
+    /* Header action buttons */
+    .header-btn {
+      background: #3b82f6;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+      position: relative;
+      font-size: 18px;
+    }
+    .header-btn:hover {
+      background: #2563eb;
+    }
+    .logout-btn {
+      background: #ef4444;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .logout-btn:hover {
+      background: #dc2626;
+    }
+    /* Notification badge */
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #ef4444;
+      color: white;
+      font-size: 10px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    main { 
+      padding: 40px 0; 
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .dashboard-header { 
+      text-align: center; 
+      margin-bottom: 40px; 
+    }
+    .dashboard-header h1 { 
+      font-size: 32px; 
+      color: #1e293b; 
+      margin-bottom: 10px; 
+    }
+    .dashboard-header p { 
+      color: #64748b; 
+    }
+    /* Filter and Search */
+    .filter-section {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .filter-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    .filter-btn {
+      padding: 8px 16px;
+      border: 1px solid #d1d5db;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .filter-btn.active {
+      background: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+    }
+    .search-input {
+      padding: 10px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 16px;
+      width: 300px;
+      min-width: 200px;
+    }
+    /* Table Styles */
+    .table-container {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    th {
+      font-weight: 600;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+    tr:hover td {
+      background: #f8fafc;
+    }
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-applied {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+    .status-accepted {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+    .status-rejected {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .status-pending {
+      background: #fef3c7;
+      color: #d97706;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+    .action-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: background 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #334155;
+    }
+    .btn-secondary:hover {
+      background: #cbd5e1;
+    }
+    /* Footer */
+    footer {
+      background-color: #1e293b;
+      color: #cbd5e1;
+      padding: 20px 0;
+      font-size: 14px;
+      margin-top: auto;
+    }
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 95%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+    .footer-links a {
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover {
+      color: white;
+    }
+    .copyright {
+      text-align: right;
+    }
+    /* Responsive adjustments */
+    @media (max-width: 1200px) {
+      .filter-section {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .search-input {
+        width: 100%;
+      }
+    }
+    @media (max-width: 768px) {
+      .header-content {
+        width: 90%;
+      }
+      .container {
+        width: 90%;
+      }
+      table {
+        font-size: 14px;
+      }
+      th, td {
+        padding: 12px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="logo">Study<span>Connect</span></a>
+      <div class="user-menu">
+        <!-- Notification Bell -->
+        <div class="notification-bell" id="notificationBell">
+          <i>🔔</i>
+          <span class="notification-badge" id="notificationBadge">2</span>
+        </div>
+        <!-- Profile Button -->
+        <button class="header-btn" title="Profile">
+          👤
+        </button>
+        <!-- Settings Button -->
+        <button class="header-btn" title="Settings">
+          ⚙️
+        </button>
+        <!-- Logout Button -->
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- Footer with Help & Support -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color: white; font-size: 20px;">Study<span>Connect</span></a>
+      </div>
+      <div class="footer-links">
+        <a href="#contact">Contact</a>
+        <a href="#privacy">Privacy Policy</a>
+        <a href="#" id="helpSupport">Help & Support</a>
+      </div>
+      <div class="copyright">
+        &copy; 2024 StudyConnect. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function logout() {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    }
+
+    // Help & Support link functionality
+    document.getElementById('helpSupport').addEventListener('click', function(e) {
+      e.preventDefault();
+      alert('Help & Support section would open here with tutorials, FAQ, and contact options.');
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const email = localStorage.getItem('userEmail');
+      if (!email || localStorage.getItem('isLoggedIn') !== 'true') {
+        window.location.href = 'index.html';
+      }
+    });
+
+    // Applications Filter functionality
+    document.querySelectorAll('.filter-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        this.classList.add('active');
+        const filter = this.dataset.filter;
+        filterApplications(filter);
+      });
+    });
+
+    function filterApplications(filter) {
+      const rows = document.querySelectorAll('#applicationsTable tr');
+      rows.forEach(row => {
+        const statusCell = row.querySelector('td:nth-child(4)');
+        if (statusCell) {
+          const statusText = statusCell.textContent.trim().toLowerCase();
+          if (filter === 'all' || statusText.includes(filter)) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        }
+      });
+    }
+
+    // Applications Search functionality
+    document.getElementById('applicationsSearch').addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const rows = document.querySelectorAll('#applicationsTable tr');
+      rows.forEach(row => {
+        const opportunityCell = row.querySelector('td:first-child');
+        const organizationCell = row.querySelector('td:nth-child(2)');
+        if (opportunityCell || organizationCell) {
+          const opportunity = opportunityCell.textContent.toLowerCase();
+          const organization = organizationCell.textContent.toLowerCase();
+          if (opportunity.includes(searchTerm) || organization.includes(searchTerm)) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        }
+      });
+    });
+
+    // Action button functionality
+    document.querySelectorAll('.action-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        const action = this.textContent.trim();
+        if (action === 'View Details') {
+          alert('Viewing application details...');
+        } else if (action === 'Withdraw') {
+          if (confirm('Are you sure you want to withdraw this application?')) {
+            alert('Application withdrawn successfully.');
+          }
+        } else if (action === 'Decline') {
+          if (confirm('Are you sure you want to decline this offer?')) {
+            alert('Offer declined successfully.');
+          }
+        } else if (action === 'Reapply') {
+          alert('Reapplying to this opportunity...');
+        }
+      });
+    });
+
+    // Notification functionality
+    document.getElementById('notificationBell').addEventListener('click', function() {
+      alert('Notifications dropdown would open here.\nIn a real app, this would show recent notifications.');
+    });
+  </script>
+</body>
+</html>

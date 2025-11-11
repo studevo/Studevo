@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Organization Dashboard — Studevo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', sans-serif; 
+      background: #f8fafc; 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container { 
+      width: 95%;
+      max-width: 1400px; 
+      margin: 0 auto; 
+      padding: 20px;
+      flex: 1;
+    }
+    header { 
+      background: white; 
+      padding: 15px 0; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    }
+    .header-content { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      width: 95%;
+      max-width: 1400px; 
+      margin: 0 auto; 
+    }
+    .logo { 
+      font-size: 24px; 
+      font-weight: 800; 
+      color: #3b82f6; 
+      text-decoration: none;
+    }
+    .logo span { color: #1e40af; }
+    .user-menu { display: flex; align-items: center; gap: 15px; }
+    .header-btn {
+      background: #3b82f6;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+      position: relative;
+      font-size: 18px;
+    }
+    .header-btn:hover { background: #2563eb; }
+    .logout-btn {
+      background: #ef4444;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .logout-btn:hover { background: #dc2626; }
+    .notification-bell {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f8fafc;
+      color: #64748b;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .notification-bell:hover,
+    .notification-bell.active {
+      background: #dbeafe;
+      color: #3b82f6;
+    }
+    .notification-bell svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+    }
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #ef4444;
+      color: white;
+      font-size: 10px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    main { padding: 40px 0; flex: 1; display: flex; flex-direction: column; }
+    .dashboard-header { text-align: center; margin-bottom: 40px; }
+    .dashboard-header h1 { font-size: 32px; color: #1e293b; margin-bottom: 10px; }
+    .dashboard-header p { color: #64748b; }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      flex: 1;
+      margin-bottom: 40px;
+    }
+    .action-card {
+      background: white;
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .action-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(59, 130, 246, 0.15);
+    }
+    .card-icon { 
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #3b82f6;
+    }
+    .card-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
+    .action-card h3 { 
+      margin-bottom: 16px; 
+      color: #1e293b; 
+      font-size: 20px; 
+      text-align: center;
+    }
+    .action-card p { 
+      color: #64748b; 
+      margin-bottom: 20px; 
+      font-size: 15px; 
+      line-height: 1.5; 
+      text-align: center;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 10px;
+    }
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #3b82f6;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: #64748b;
+      text-align: center;
+    }
+    .events-list {
+      list-style: none;
+      margin-top: 10px;
+    }
+    .event-item {
+      padding: 10px 0;
+      font-size: 14px;
+    }
+    .event-title {
+      font-weight: 600;
+      color: #1e293b;
+    }
+    .event-time {
+      color: #64748b;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #3b82f6;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: background 0.3s;
+      text-align: center;
+    }
+    .btn:hover { background: #2563eb; }
+    footer {
+      background-color: #1e293b;
+      color: #cbd5e1;
+      padding: 20px 0;
+      font-size: 14px;
+      margin-top: auto;
+    }
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 95%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a {
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: white; }
+    .copyright { text-align: right; }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal {
+      background: white;
+      width: 85%;
+      max-width: 800px;
+      height: 80%;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    .modal-overlay.active .modal { transform: scale(1); }
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title { font-size: 24px; font-weight: 700; color: #1e293b; }
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: #94a3b8;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .close-modal:hover { background: #f1f5f9; color: #334155; }
+    .modal-content {
+      flex: 1;
+      overflow: auto;
+      padding: 20px;
+    }
+    .table-container { overflow-x: auto; margin-top: 10px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 14px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    th { font-weight: 600; color: #1e293b; background: #f8fafc; }
+    tr:hover td { background: #f8fafc; }
+    .btn-view-details {
+      background: #3b82f6;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .btn-view-details:hover {
+      background: #2563eb;
+    }
+    .settings-form .form-group {
+      margin-bottom: 20px;
+    }
+    .settings-form label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #334155;
+    }
+    .settings-form input, .settings-form select, .settings-form textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #f8fafc;
+    }
+    .settings-form input:focus, .settings-form select:focus, .settings-form textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #cbd5e1;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #3b82f6;
+    }
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+    .modal-footer {
+      padding: 20px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #334155;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-secondary:hover {
+      background: #cbd5e1;
+    }
+    .view-toggle-btn {
+      background: transparent;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      color: #64748b;
+    }
+    .view-toggle-btn.active {
+      background: #3b82f6;
+      color: white;
+    }
+    .view-toggle-btn:hover:not(.active) {
+      background: #e2e8f0;
+    }
+    .posts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .post-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: box-shadow 0.2s;
+    }
+    .post-card:hover {
+      box-shadow: 0 4px 12px rgba(59,130,246,0.15);
+    }
+    .post-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .post-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .post-meta {
+      font-size: 14px;
+      color: #64748b;
+      display: flex;
+      gap: 12px;
+    }
+    .post-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .status-active { background: #dcfce7; color: #16a34a; }
+    .status-draft { background: #fef3c7; color: #d97706; }
+    .status-pending { background: #dbeafe; color: #1d4ed8; }
+    .status-accepted { background: #dcfce7; color: #16a34a; }
+    .btn-action {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-view {
+      background: #3b82f6;
+      color: white;
+    }
+    .btn-edit {
+      background: #10b981;
+      color: white;
+    }
+    .btn-delete {
+      background: #ef4444;
+      color: white;
+    }
+    .btn-view:hover { background: #2563eb; }
+    .btn-edit:hover { background: #059669; }
+    .btn-delete:hover { background: #dc2626; }
+    .confirm-modal {
+      background: white;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+      padding: 20px;
+    }
+    .confirm-modal .modal-title {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+    .confirm-modal .modal-content {
+      padding: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .confirm-modal .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 0;
+    }
+    #calendarGrid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      padding: 10px;
+      background: #f1f5f9;
+    }
+    #calendarGrid > div {
+      padding: 8px;
+      min-height: 80px;
+      background: white;
+      border-radius: 4px;
+      font-size: 12px;
+      overflow: hidden;
+    }
+    #calendarGrid > div:nth-child(-n+7) {
+      text-align: center;
+      font-weight: bold;
+      background: #f8fafc;
+    }
+    .calendar-event {
+      font-size: 10px;
+      padding: 2px 4px;
+      border-radius: 3px;
+      margin-top: 2px;
+      cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: block;
+      max-width: 100%;
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    .calendar-deadline {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+    #eventDetails {
+      padding: 16px;
+      border-top: 1px solid #e2e8f0;
+      max-height: 120px;
+      overflow-y: auto;
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .modal { width: 95%; max-width: 500px; height: 90%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="logo">Stud<span>evo</span></a>
+      <div class="user-menu">
+        <div class="notification-bell" id="notificationBell">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge" id="notificationBadge">0</span>
+        </div>
+        <button class="header-btn" title="Profile" id="openProfileBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="7" r="4"></circle>
+            <path d="M21 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path>
+          </svg>
+        </button>
+        <button class="header-btn" title="Settings" id="openSettingsModal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09z"></path>
+          </svg>
+        </button>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+      </div>
+    </div>
+  </header>
+  <main class="container">
+    <div class="dashboard-header">
+      <h1>Organization Dashboard</h1>
+      <p>Manage your opportunities, applicants, and engagement.</p>
+    </div>
+    <div class="dashboard-grid">
+      <div class="action-card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14,2 14,8 20,8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10,9 9,9 8,9"></polyline>
+          </svg>
+        </div>
+        <h3>Recent Applicants</h3>
+        <p>New applications received</p>
+        <ul class="recent-list" id="recentApplicantsList">
+          <li class="recent-item">
+            <div class="recent-title">No recent applicants</div>
+          </li>
+        </ul>
+        <a href="#" class="btn" id="openOrgApplicationsModal" style="margin-top: 20px;">View All Applications</a>
+      </div>
+      <div class="action-card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <h3>Upcoming Events</h3>
+        <p>Key dates to remember</p>
+        <ul class="events-list" id="upcomingEventsList">
+          <li class="event-item">
+            <div class="event-title">No upcoming events</div>
+          </li>
+        </ul>
+        <a href="#" class="btn" id="openOrgCalendarModal" style="margin-top: 20px;">View Full Calendar</a>
+      </div>
+      <div class="action-card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+        </div>
+        <h3>Engagement Stats</h3>
+        <p>Performance at a glance</p>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value" id="totalPosts">0</div>
+            <div class="stat-label">Total Posts</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="activePosts">0</div>
+            <div class="stat-label">Active</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="totalApplicants">0</div>
+            <div class="stat-label">Applicants</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="avgPerPost">0</div>
+            <div class="stat-label">Avg/Post</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="posts-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="color: #1e293b; font-size: 24px;">All Posts</h2>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <div style="display: flex; background: #f1f5f9; border-radius: 8px; overflow: hidden;">
+            <button id="listViewBtn" class="view-toggle-btn active" title="List View">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <circle cx="4" cy="6" r="2"></circle>
+                <circle cx="4" cy="12" r="2"></circle>
+                <circle cx="4" cy="18" r="2"></circle>
+              </svg>
+            </button>
+            <button id="gridViewBtn" class="view-toggle-btn" title="Grid View">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+            </button>
+          </div>
+          <button class="btn" id="openCreatePostModal">Create a Post</button>
+        </div>
+      </div>
+      <div id="postsContainer" class="posts-list">
+        <p style="text-align:center; color:#64748b;">No posts yet. Create your first opportunity!</p>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color: white; font-size: 20px; text-decoration: none;">Stud<span>evo</span></a>
+      </div>
+      <div class="footer-links">
+        <a href="#contact">Contact</a>
+        <a href="#privacy">Privacy Policy</a>
+        <a href="#" id="helpSupport">Help & Support</a>
+      </div>
+      <div class="copyright">
+        &copy; 2024 Studevo. All rights reserved.
+      </div>
+    </div>
+  </footer>
+  <!-- Modals (same as before, only CREATE POST MODAL changes) -->
+  <div class="modal-overlay" id="orgApplicationsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Received Applications</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-content">
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Post</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="applicationsTableBody">
+              <tr><td colspan="5" style="text-align:center; padding:20px;">No applications yet</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="orgCalendarModal">
+    <div class="modal" style="width: 95%; max-width: 1200px; height: 85%;">
+      <div class="modal-header">
+        <h2 class="modal-title">Calendar</h2>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button id="prevMonth" style="width: 30px; height: 30px; border-radius: 50%; background: #e2e8f0; border: none; cursor: pointer;"><</button>
+          <span id="currentMonthYear" style="font-weight: 600; min-width: 150px; text-align: center;"></span>
+          <button id="nextMonth" style="width: 30px; height: 30px; border-radius: 50%; background: #e2e8f0; border: none; cursor: pointer;">></button>
+        </div>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-content" style="padding: 0; overflow-x: hidden;">
+        <div id="calendarGrid">
+          <div>Sun</div>
+          <div>Mon</div>
+          <div>Tue</div>
+          <div>Wed</div>
+          <div>Thu</div>
+          <div>Fri</div>
+          <div>Sat</div>
+        </div>
+        <div id="eventDetails">
+          <h4 id="eventTitle" style="margin: 0 0 8px;"></h4>
+          <p id="eventInfo" style="margin: 0; color: #475569; font-size: 14px;"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="profileModal">
+    <div class="modal" style="max-width: 700px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Organization Profile</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-content">
+        <form class="settings-form">
+          <div class="form-group">
+            <label for="orgName">Organization Name</label>
+            <input type="text" id="orgName" value="">
+          </div>
+          <div class="form-group">
+            <label for="orgEmail">Contact Email</label>
+            <input type="email" id="orgEmail" value="">
+          </div>
+          <div class="form-group">
+            <label for="orgWebsite">Website</label>
+            <input type="url" id="orgWebsite" value="">
+          </div>
+          <div class="form-group">
+            <label for="orgDescription">Description</label>
+            <textarea id="orgDescription" rows="3"></textarea>
+          </div>
+          <h3 style="margin-top: 24px; margin-bottom: 16px; color: #1e293b;">Privacy Settings</h3>
+          <div class="form-group">
+            <label>Data Sharing</label>
+            <select id="dataSharing">
+              <option>Share anonymized data for research</option>
+              <option selected>Do not share my data</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Profile Visibility</label>
+            <select id="profileVisibility">
+              <option>Public</option>
+              <option selected>Visible to applicants only</option>
+              <option>Private</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="cancelProfile">Cancel</button>
+        <button class="btn" id="saveProfile">Save Profile</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="notificationsModal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Notification Settings</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-content">
+        <form class="settings-form">
+          <div class="form-group">
+            <label>Email Notifications</label>
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 8px;">
+              <label class="toggle-switch">
+                <input type="checkbox" id="emailNotif" checked>
+                <span class="slider"></span>
+              </label>
+              <span>Receive email alerts for new applications</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Browser Notifications</label>
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 8px;">
+              <label class="toggle-switch">
+                <input type="checkbox" id="browserNotif" checked>
+                <span class="slider"></span>
+              </label>
+              <span>Show desktop notifications</span>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="cancelNotifications">Cancel</button>
+        <button class="btn" id="saveNotifications">Save Settings</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Appearance Settings</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-content">
+        <form class="settings-form">
+          <div class="form-group">
+            <label for="themeSelect">Theme</label>
+            <select id="themeSelect">
+              <option>Light</option>
+              <option>Dark</option>
+              <option selected>System Default</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="langSelect">Language</label>
+            <select id="langSelect">
+              <option>English</option>
+              <option>Georgian</option>
+              <option>Spanish</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="cancelSettings">Cancel</button>
+        <button class="btn" id="saveSettings">Save Changes</button>
+      </div>
+    </div>
+  </div>
+  <!-- CREATE POST MODAL WITH APPLICATION LINK -->
+  <div class="modal-overlay" id="createPostModal">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Create New Post</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-content">
+        <form id="createPostForm" class="settings-form">
+          <div class="form-group">
+            <label for="postTitle">Title *</label>
+            <input type="text" id="postTitle" required>
+          </div>
+          <div class="form-group">
+            <label for="postType">Type *</label>
+            <select id="postType" required>
+              <option value="">Select type</option>
+              <option value="Internship">Internship</option>
+              <option value="Volunteering">Volunteering</option>
+              <option value="Mentorship">Mentorship</option>
+              <option value="Event">Event</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="postDescription">Description *</label>
+            <textarea id="postDescription" rows="4" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="postLocation">Location</label>
+            <input type="text" id="postLocation" placeholder="e.g., Tbilisi, Georgia or Remote">
+          </div>
+          <div class="form-group">
+            <label for="postDuration">Duration (Start - End)</label>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="date" id="durationStart" required>
+              <span>to</span>
+              <input type="date" id="durationEnd" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="postDeadline">Application Deadline</label>
+            <input type="date" id="postDeadline">
+          </div>
+          <!-- ✅ NEW FIELD -->
+          <div class="form-group">
+            <label for="applicationLink">Application Link (Optional)</label>
+            <input type="url" id="applicationLink" placeholder="https://example.com/apply">
+            <small style="color: #64748b; display: block; margin-top: 4px;">
+              Students will be redirected here when they click “Quick Apply”.
+            </small>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="cancelCreatePost">Cancel</button>
+        <button class="btn" id="saveAsDraft">Save as Draft</button>
+        <button class="btn" id="publishPost">Publish Post</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="editPostModal">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-header">
+        <h2 class="modal-title">Edit Post</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-content">
+        <form id="editPostForm" class="settings-form">
+          <input type="hidden" id="editPostId">
+          <div class="form-group">
+            <label for="editTitle">Title *</label>
+            <input type="text" id="editTitle" required>
+          </div>
+          <div class="form-group">
+            <label for="editType">Type *</label>
+            <select id="editType" required>
+              <option value="">Select type</option>
+              <option value="Internship">Internship</option>
+              <option value="Volunteering">Volunteering</option>
+              <option value="Mentorship">Mentorship</option>
+              <option value="Event">Event</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editDescription">Description *</label>
+            <textarea id="editDescription" rows="4" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="editLocation">Location</label>
+            <input type="text" id="editLocation" placeholder="e.g., Tbilisi, Georgia or Remote">
+          </div>
+          <div class="form-group">
+            <label for="editDuration">Duration (Start - End)</label>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="date" id="editDurationStart" required>
+              <span>to</span>
+              <input type="date" id="editDurationEnd" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="editDeadline">Application Deadline</label>
+            <input type="date" id="editDeadline">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="cancelEditPost">Cancel</button>
+        <button class="btn" id="updatePost">Update Post</button>
+        <button class="btn" id="publishFromEdit" style="display: none;">Publish Post</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="viewPostModal">
+    <div class="modal" style="max-width: 650px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="viewPostTitle">Post Details</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-content">
+        <div style="padding: 20px;">
+          <div style="font-size: 18px; font-weight: 700; margin-bottom: 8px;" id="viewPostType"></div>
+          <div style="color: #64748b; margin-bottom: 16px;" id="viewPostDuration"></div>
+          <div style="color: #64748b; margin-bottom: 16px;" id="viewPostDeadline"></div>
+          <div style="color: #475569; margin-bottom: 16px;" id="viewPostDescription"></div>
+          <div style="display: flex; gap: 8px; align-items: center; margin-top: 16px;">
+            <span>Status:</span>
+            <span class="status-badge" id="viewPostStatus">loading</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="closeViewPost">Close</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="confirmDeleteModal">
+    <div class="confirm-modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirm Deletion</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-content">
+        <p>Are you sure you want to delete this post? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="cancelDelete">Cancel</button>
+        <button class="btn" id="confirmDelete">Delete Post</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="confirmPublishModal">
+    <div class="confirm-modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Confirm Publication</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-content">
+        <p>Are you sure you want to publish this post? It will become visible to students immediately.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="cancelPublish">Cancel</button>
+        <button class="btn" id="confirmPublish">Publish Post</button>
+      </div>
+    </div>
+  </div>
+  <div id="toastNotification" style="
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #3b82f6;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    opacity: 0;
+    transition: opacity 0.3s;
+  "></div>
+  <script>
+    let currentUser = null;
+    let currentOrgId = null;
+    let pendingDeleteId = null;
+    function logout() {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    }
+    document.getElementById('helpSupport').addEventListener('click', function(e) {
+      e.preventDefault();
+      showToast('Help & Support section would open here.');
+    });
+    const modals = {
+      applications: document.getElementById('orgApplicationsModal'),
+      calendar: document.getElementById('orgCalendarModal'),
+      profile: document.getElementById('profileModal'),
+      notifications: document.getElementById('notificationsModal'),
+      settings: document.getElementById('settingsModal'),
+      createPost: document.getElementById('createPostModal'),
+      editPost: document.getElementById('editPostModal'),
+      viewPost: document.getElementById('viewPostModal'),
+      confirmDelete: document.getElementById('confirmDeleteModal'),
+      confirmPublish: document.getElementById('confirmPublishModal')
+    };
+    Object.values(modals).forEach(modal => {
+      const closeBtn = modal.querySelector('.close-modal');
+      if (closeBtn) closeBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        if (modal === modals.createPost) {
+          document.getElementById('createPostForm').reset();
+        }
+        if (modal === modals.editPost) {
+          document.getElementById('editPostForm').reset();
+        }
+      });
+    });
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+          document.body.style.overflow = 'auto';
+          if (overlay === modals.createPost) {
+            document.getElementById('createPostForm').reset();
+          }
+          if (overlay === modals.editPost) {
+            document.getElementById('editPostForm').reset();
+          }
+        }
+      });
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        const active = document.querySelector('.modal-overlay.active');
+        if (active) {
+          active.classList.remove('active');
+          document.body.style.overflow = 'auto';
+          if (active === modals.createPost) {
+            document.getElementById('createPostForm').reset();
+          }
+          if (active === modals.editPost) {
+            document.getElementById('editPostForm').reset();
+          }
+        }
+      }
+    });
+    let currentView = 'list';
+    document.getElementById('listViewBtn').addEventListener('click', () => {
+      currentView = 'list';
+      document.getElementById('listViewBtn').classList.add('active');
+      document.getElementById('gridViewBtn').classList.remove('active');
+      renderPosts();
+    });
+    document.getElementById('gridViewBtn').addEventListener('click', () => {
+      currentView = 'grid';
+      document.getElementById('gridViewBtn').classList.add('active');
+      document.getElementById('listViewBtn').classList.remove('active');
+      renderPosts();
+    });
+    document.getElementById('openCreatePostModal').addEventListener('click', e => {
+      e.preventDefault();
+      modals.createPost.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+    document.getElementById('cancelCreatePost').addEventListener('click', () => {
+      modals.createPost.classList.remove('active');
+      document.body.style.overflow = 'auto';
+      document.getElementById('createPostForm').reset();
+    });
+    const getDateValue = (id) => {
+      const val = document.getElementById(id).value;
+      return val ? val : null;
+    };
+    // ✅ UPDATED: Save As Draft with applicationLink
+    document.getElementById('saveAsDraft').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('postTitle').value.trim();
+      const type = document.getElementById('postType').value;
+      const description = document.getElementById('postDescription').value.trim();
+      const location = document.getElementById('postLocation').value.trim() || 'Remote';
+      const applicationLink = document.getElementById('applicationLink').value.trim();
+      if (!title || !type || !description) {
+        showToast('Please fill in all required fields.');
+        return;
+      }
+      const formData = {
+        orgId: currentOrgId,
+        orgName: currentUser.orgName,
+        title,
+        type,
+        description,
+        location,
+        durationStart: getDateValue('durationStart'),
+        durationEnd: getDateValue('durationEnd'),
+        deadline: getDateValue('postDeadline'),
+        applicationLink,
+        status: 'draft'
+      };
+      try {
+        const response = await fetch('http://localhost:5000/api/posts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        if (response.ok) {
+          showToast('Draft saved successfully!');
+          modals.createPost.classList.remove('active');
+          document.body.style.overflow = 'auto';
+          document.getElementById('createPostForm').reset();
+          loadPosts();
+        } else {
+          const err = await response.json();
+          showToast(`Draft failed: ${err.error || 'Unknown error'}`);
+          console.error('Save draft error:', err);
+        }
+      } catch (error) {
+        showToast('Network error. Is backend running?');
+        console.error(error);
+      }
+    });
+    // ✅ UPDATED: Publish Post with applicationLink
+    document.getElementById('publishPost').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('postTitle').value.trim();
+      const type = document.getElementById('postType').value;
+      const description = document.getElementById('postDescription').value.trim();
+      const location = document.getElementById('postLocation').value.trim() || 'Remote';
+      const applicationLink = document.getElementById('applicationLink').value.trim();
+      if (!title || !type || !description) {
+        showToast('Please fill in all required fields before publishing.');
+        return;
+      }
+      const start = getDateValue('durationStart');
+      const end = getDateValue('durationEnd');
+      if (start && end && new Date(start) > new Date(end)) {
+        showToast('Start date cannot be after end date.');
+        return;
+      }
+      modals.confirmPublish.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      modals.confirmPublish.dataset.applicationLink = applicationLink;
+    });
+    // ✅ UPDATED: Confirm Publish with stored link
+    document.getElementById('confirmPublish').addEventListener('click', async () => {
+      const title = document.getElementById('postTitle').value.trim();
+      const type = document.getElementById('postType').value;
+      const description = document.getElementById('postDescription').value.trim();
+      const location = document.getElementById('postLocation').value.trim() || 'Remote';
+      const applicationLink = modals.confirmPublish.dataset.applicationLink || '';
+      const formData = {
+        orgId: currentOrgId,
+        orgName: currentUser.orgName,
+        title,
+        type,
+        description,
+        location,
+        durationStart: getDateValue('durationStart'),
+        durationEnd: getDateValue('durationEnd'),
+        deadline: getDateValue('postDeadline'),
+        applicationLink,
+        status: 'active'
+      };
+      try {
+        const response = await fetch('http://localhost:5000/api/posts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        if (response.ok) {
+          showToast('Post published successfully!');
+          modals.createPost.classList.remove('active');
+          modals.confirmPublish.classList.remove('active');
+          document.body.style.overflow = 'auto';
+          document.getElementById('createPostForm').reset();
+          loadPosts();
+        } else {
+          const err = await response.json();
+          showToast(`Publish failed: ${err.error || 'Server error'}`);
+          console.error('Publish error:', err);
+        }
+      } catch (error) {
+        showToast('Network error. Is backend running on http://localhost:5000?');
+        console.error('Publish network error:', error);
+      }
+    });
+    document.getElementById('cancelPublish').addEventListener('click', () => {
+      modals.confirmPublish.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    });
+    function renderPosts() {
+      const container = document.getElementById('postsContainer');
+      if (!window.postsData || window.postsData.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#64748b;">No posts yet. Create your first opportunity!</p>';
+        return;
+      }
+      const total = window.postsData.length;
+      const active = window.postsData.filter(p => p.status === 'active').length;
+      const applicants = window.postsData.reduce((sum, p) => sum + (p.applicantCount || 0), 0);
+      const avg = total > 0 ? (applicants / total).toFixed(1) : 0;
+      document.getElementById('totalPosts').textContent = total;
+      document.getElementById('activePosts').textContent = active;
+      document.getElementById('totalApplicants').textContent = applicants;
+      document.getElementById('avgPerPost').textContent = avg;
+      if (currentView === 'grid') {
+        container.className = 'post-grid';
+        container.innerHTML = window.postsData.map(post => `
+          <div class="post-card">
+            <div class="post-header">
+              <div class="post-title">${post.title}</div>
+              <span class="status-badge status-${post.status}">${post.status.charAt(0).toUpperCase() + post.status.slice(1)}</span>
+            </div>
+            <div class="post-meta">
+              <span>${post.type}</span>
+              ${post.durationStart && post.durationEnd ? `<span>${new Date(post.durationStart).toLocaleDateString()} – ${new Date(post.durationEnd).toLocaleDateString()}</span>` : ''}
+              ${post.deadline ? `<span>Deadline: ${new Date(post.deadline).toLocaleDateString()}</span>` : ''}
+            </div>
+            <p style="margin: 12px 0; color: #475569;">${post.description.substring(0, 100)}${post.description.length > 100 ? '...' : ''}</p>
+            <div class="post-actions">
+              <button class="btn-action btn-view" data-id="${post._id}">View Details</button>
+              <button class="btn-action btn-edit" data-id="${post._id}">Edit</button>
+              <button class="btn-action btn-delete" data-id="${post._id}">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        container.className = 'posts-list';
+        container.innerHTML = window.postsData.map(post => `
+          <div class="post-card">
+            <div class="post-header">
+              <div class="post-title">${post.title}</div>
+              <span class="status-badge status-${post.status}">${post.status.charAt(0).toUpperCase() + post.status.slice(1)}</span>
+            </div>
+            <div class="post-meta">
+              <span>${post.type}</span>
+              ${post.durationStart && post.durationEnd ? `<span>${new Date(post.durationStart).toLocaleDateString()} – ${new Date(post.durationEnd).toLocaleDateString()}</span>` : ''}
+              ${post.deadline ? `<span>Deadline: ${new Date(post.deadline).toLocaleDateString()}</span>` : ''}
+              <span>Applicants: ${post.applicantCount || 0}</span>
+            </div>
+            <p style="margin: 12px 0; color: #475569;">${post.description}</p>
+            <div class="post-actions">
+              <button class="btn-action btn-view" data-id="${post._id}">View Details</button>
+              <button class="btn-action btn-edit" data-id="${post._id}">Edit</button>
+              <button class="btn-action btn-delete" data-id="${post._id}">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      }
+      container.querySelectorAll('.btn-view').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = e.target.dataset.id;
+          showViewPost(id);
+        });
+      });
+      container.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = e.target.dataset.id;
+          showEditPost(id);
+        });
+      });
+      container.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = e.target.dataset.id;
+          confirmDeletePost(id);
+        });
+      });
+    }
+    async function loadPosts() {
+      if (!currentOrgId) {
+        document.getElementById('postsContainer').innerHTML = '<p style="text-align:center;color:red;">Please log in to view your posts.</p>';
+        return;
+      }
+      try {
+        const response = await fetch(`http://localhost:5000/api/posts?orgId=${currentOrgId}`);
+        if (response.ok) {
+          window.postsData = await response.json();
+          renderPosts();
+        } else {
+          console.error('Failed to load posts');
+          window.postsData = [];
+          renderPosts();
+        }
+      } catch (error) {
+        console.error('Network error loading posts:', error);
+        document.getElementById('postsContainer').innerHTML = '<p style="text-align:center;color:red;">Failed to load posts. Is the backend running?</p>';
+      }
+    }
+    // ... (rest of script unchanged — loadRecentApplicants, loadUpcomingEvents, etc.)
+    async function loadRecentApplicants() {
+      if (!currentOrgId) return;
+      try {
+        const response = await fetch(`http://localhost:5000/api/applications/recent?orgId=${currentOrgId}`);
+        if (response.ok) {
+          const apps = await response.json();
+          const list = document.getElementById('recentApplicantsList');
+          if (apps.length === 0) {
+            list.innerHTML = '<li class="recent-item"><div class="recent-title">No recent applicants</div></li>';
+          } else {
+            list.innerHTML = apps.map(app => `
+              <li class="recent-item">
+                <div class="recent-title">${app.studentName || 'Anonymous'}</div>
+                <div class="recent-meta">${app.postTitle} • <span class="status-badge status-${app.status}">${app.status}</span></div>
+              </li>
+            `).join('');
+          }
+        }
+      } catch (err) {
+        console.error('Error loading recent applicants:', err);
+      }
+    }
+    async function loadUpcomingEvents() {
+      if (!currentOrgId) return;
+      try {
+        const response = await fetch(`http://localhost:5000/api/events/upcoming?orgId=${currentOrgId}`);
+        if (response.ok) {
+          const events = await response.json();
+          const list = document.getElementById('upcomingEventsList');
+          if (events.length === 0) {
+            list.innerHTML = '<li class="event-item"><div class="event-title">No upcoming events</div></li>';
+          } else {
+            list.innerHTML = events.map(ev => `
+              <li class="event-item">
+                <div class="event-title">${ev.title}</div>
+                <div class="event-time">${ev.date} • ${ev.time}</div>
+              </li>
+            `).join('');
+          }
+        }
+      } catch (err) {
+        console.error('Error loading upcoming events:', err);
+      }
+    }
+    async function loadApplicationsTable() {
+      if (!currentOrgId) return;
+      try {
+        const response = await fetch(`http://localhost:5000/api/applications?orgId=${currentOrgId}`);
+        if (response.ok) {
+          const apps = await response.json();
+          const tbody = document.getElementById('applicationsTableBody');
+          if (apps.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">No applications yet</td></tr>';
+          } else {
+            tbody.innerHTML = apps.map(app => `
+              <tr>
+                <td>${app.studentName || 'Anonymous'}</td>
+                <td>${app.postTitle}</td>
+                <td>${app.appliedAt}</td>
+                <td><span class="status-badge status-${app.status}">${app.status}</span></td>
+                <td><button class="btn-view-details" data-id="${app._id}">View Details</button></td>
+              </tr>
+            `).join('');
+          }
+        }
+      } catch (err) {
+        console.error('Error loading applications:', err);
+        document.getElementById('applicationsTableBody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:red;">Failed to load applications</td></tr>';
+      }
+    }
+    async function showViewPost(id) {
+      try {
+        const response = await fetch(`http://localhost:5000/api/posts/${id}`);
+        if (response.ok) {
+          const post = await response.json();
+          document.getElementById('viewPostTitle').textContent = post.title;
+          document.getElementById('viewPostType').textContent = post.type;
+          document.getElementById('viewPostDuration').textContent = post.durationStart && post.durationEnd ? 
+            `${new Date(post.durationStart).toLocaleDateString()} – ${new Date(post.durationEnd).toLocaleDateString()}` : 'N/A';
+          document.getElementById('viewPostDeadline').textContent = post.deadline ? `Deadline: ${new Date(post.deadline).toLocaleDateString()}` : 'No deadline';
+          document.getElementById('viewPostDescription').textContent = post.description;
+          document.getElementById('viewPostStatus').textContent = post.status;
+          document.getElementById('viewPostStatus').className = `status-badge status-${post.status}`;
+          modals.viewPost.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        } else {
+          showToast('Failed to load post details.');
+        }
+      } catch (err) {
+        showToast('Network error. Could not load post.');
+        console.error(err);
+      }
+    }
+    async function showEditPost(id) {
+      try {
+        const response = await fetch(`http://localhost:5000/api/posts/${id}`);
+        if (response.ok) {
+          const post = await response.json();
+          document.getElementById('editPostId').value = post._id;
+          document.getElementById('editTitle').value = post.title;
+          document.getElementById('editType').value = post.type;
+          document.getElementById('editDescription').value = post.description;
+          document.getElementById('editLocation').value = post.location || '';
+          document.getElementById('editDurationStart').value = post.durationStart ? new Date(post.durationStart).toISOString().split('T')[0] : '';
+          document.getElementById('editDurationEnd').value = post.durationEnd ? new Date(post.durationEnd).toISOString().split('T')[0] : '';
+          document.getElementById('editDeadline').value = post.deadline ? new Date(post.deadline).toISOString().split('T')[0] : '';
+          const publishBtn = document.getElementById('publishFromEdit');
+          if (post.status === 'draft') {
+            publishBtn.style.display = 'inline-block';
+          } else {
+            publishBtn.style.display = 'none';
+          }
+          modals.editPost.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        } else {
+          showToast('Failed to load post for editing.');
+        }
+      } catch (err) {
+        showToast('Network error. Could not load post.');
+        console.error(err);
+      }
+    }
+    document.getElementById('updatePost').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editPostId').value;
+      const location = document.getElementById('editLocation').value.trim() || 'Remote';
+      const formData = {
+        title: document.getElementById('editTitle').value,
+        type: document.getElementById('editType').value,
+        description: document.getElementById('editDescription').value,
+        location,
+        durationStart: document.getElementById('editDurationStart').value || null,
+        durationEnd: document.getElementById('editDurationEnd').value || null,
+        deadline: document.getElementById('editDeadline').value || null
+      };
+      try {
+        const response = await fetch(`http://localhost:5000/api/posts/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        if (response.ok) {
+          showToast('Post updated successfully!');
+          modals.editPost.classList.remove('active');
+          document.body.style.overflow = 'auto';
+          loadPosts();
+        } else {
+          const err = await response.json();
+          showToast(err.error || 'Failed to update post');
+        }
+      } catch (error) {
+        showToast('Network error. Please ensure backend is running.');
+        console.error(error);
+      }
+    });
+    document.getElementById('publishFromEdit').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editPostId').value;
+      const location = document.getElementById('editLocation').value.trim() || 'Remote';
+      const formData = {
+        title: document.getElementById('editTitle').value,
+        type: document.getElementById('editType').value,
+        description: document.getElementById('editDescription').value,
+        location,
+        durationStart: document.getElementById('editDurationStart').value || null,
+        durationEnd: document.getElementById('editDurationEnd').value || null,
+        deadline: document.getElementById('editDeadline').value || null,
+        status: 'active'
+      };
+      try {
+        const response = await fetch(`http://localhost:5000/api/posts/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        if (response.ok) {
+          showToast('Post published successfully!');
+          modals.editPost.classList.remove('active');
+          document.body.style.overflow = 'auto';
+          loadPosts();
+        } else {
+          const err = await response.json();
+          showToast(err.error || 'Failed to publish post');
+        }
+      } catch (error) {
+        showToast('Network error. Please ensure backend is running.');
+        console.error(error);
+      }
+    });
+    function confirmDeletePost(id) {
+      pendingDeleteId = id;
+      modals.confirmDelete.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    document.getElementById('cancelDelete').addEventListener('click', () => {
+      modals.confirmDelete.classList.remove('active');
+      document.body.style.overflow = 'auto';
+      pendingDeleteId = null;
+    });
+    document.getElementById('confirmDelete').addEventListener('click', async () => {
+      if (!pendingDeleteId) {
+        showToast('No post selected for deletion.');
+        return;
+      }
+      try {
+        const response = await fetch(`http://localhost:5000/api/posts/${pendingDeleteId}`, {
+          method: 'DELETE'
+        });
+        if (response.ok) {
+          showToast('Post deleted successfully!');
+          modals.confirmDelete.classList.remove('active');
+          document.body.style.overflow = 'auto';
+          loadPosts();
+        } else {
+          const err = await response.json();
+          showToast(err.error || 'Failed to delete post');
+        }
+      } catch (error) {
+        showToast('Network error. Please ensure backend is running.');
+        console.error(error);
+      }
+    });
+    function showToast(message, duration = 7000) {
+      const toast = document.getElementById('toastNotification');
+      toast.textContent = message;
+      toast.style.opacity = '1';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+      }, duration - 300);
+    }
+    let currentCalendarDate = new Date();
+    function renderCalendar() {
+      const year = currentCalendarDate.getFullYear();
+      const month = currentCalendarDate.getMonth();
+      const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+      document.getElementById('currentMonthYear').textContent = `${monthNames[month]} ${year}`;
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const grid = document.getElementById('calendarGrid');
+      while (grid.children.length > 7) {
+        grid.removeChild(grid.lastChild);
+      }
+      for (let i = 0; i < firstDay; i++) {
+        const emptyCell = document.createElement('div');
+        grid.appendChild(emptyCell);
+      }
+      for (let day = 1; day <= daysInMonth; day++) {
+        const cell = document.createElement('div');
+        const dayNum = document.createElement('div');
+        dayNum.textContent = day;
+        dayNum.style.fontWeight = 'bold';
+        dayNum.style.marginBottom = '4px';
+        cell.appendChild(dayNum);
+        const cellDate = new Date(year, month, day);
+        const events = getEventsForDate(cellDate);
+        events.forEach(event => {
+          const eventEl = document.createElement('div');
+          eventEl.textContent = event.title;
+          eventEl.title = `${event.title} (${event.type})`;
+          eventEl.className = event.isDeadline ? 'calendar-event calendar-deadline' : 'calendar-event';
+          eventEl.addEventListener('click', () => {
+            document.getElementById('eventTitle').textContent = event.title;
+            document.getElementById('eventInfo').innerHTML = `
+              Type: ${event.type}<br>
+              ${event.duration ? `Duration: ${event.duration}<br>` : ''}
+              ${event.deadline ? `Deadline: ${event.deadline}` : ''}
+            `;
+            document.getElementById('eventDetails').style.display = 'block';
+          });
+          cell.appendChild(eventEl);
+        });
+        grid.appendChild(cell);
+      }
+    }
+    function getEventsForDate(date) {
+      const events = [];
+      const today = new Date(date);
+      today.setHours(0, 0, 0, 0);
+      if (!window.postsData) return events;
+      window.postsData.forEach(post => {
+        if (post.durationStart && post.durationEnd) {
+          const start = new Date(post.durationStart);
+          const end = new Date(post.durationEnd);
+          start.setHours(0, 0, 0, 0);
+          end.setHours(0, 0, 0, 0);
+          if (today >= start && today <= end) {
+            events.push({
+              title: `${post.title} (Active)`,
+              type: post.type,
+              duration: `${start.toLocaleDateString()} – ${end.toLocaleDateString()}`,
+              isDeadline: false
+            });
+          }
+        }
+        if (post.deadline) {
+          const ddl = new Date(post.deadline);
+          ddl.setHours(0, 0, 0, 0);
+          if (ddl.getTime() === today.getTime()) {
+            events.push({
+              title: `${post.title} (Deadline)`,
+              type: post.type,
+              deadline: ddl.toLocaleDateString(),
+              isDeadline: true
+            });
+          }
+        }
+      });
+      return events;
+    }
+    document.getElementById('prevMonth').addEventListener('click', () => {
+      currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+      renderCalendar();
+    });
+    document.getElementById('nextMonth').addEventListener('click', () => {
+      currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+      renderCalendar();
+    });
+    document.getElementById('openOrgCalendarModal').addEventListener('click', e => {
+      e.preventDefault();
+      modals.calendar.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      currentCalendarDate = new Date();
+      renderCalendar();
+    });
+    function simulateLogin() {
+      currentOrgId = "660000000000000000000000";
+      currentUser = {
+        role: 'organization',
+        email: 'contact@techinnovations.com',
+        orgName: 'Tech Innovations Inc.'
+      };
+      document.getElementById('orgName').value = currentUser.orgName || '';
+      document.getElementById('orgEmail').value = currentUser.email || '';
+      loadPosts();
+      loadRecentApplicants();
+      loadUpcomingEvents();
+      loadApplicationsTable();
+      showToast('Welcome back, ' + currentUser.orgName + '!', 4000);
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      simulateLogin();
+      document.getElementById('openOrgApplicationsModal').addEventListener('click', e => {
+        e.preventDefault();
+        modals.applications.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        loadApplicationsTable();
+      });
+      document.getElementById('openOrgCalendarModal').addEventListener('click', e => {
+        e.preventDefault();
+        modals.calendar.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        currentCalendarDate = new Date();
+        renderCalendar();
+      });
+      document.getElementById('openProfileBtn').addEventListener('click', e => {
+        e.preventDefault();
+        modals.profile.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+      document.getElementById('notificationBell').addEventListener('click', e => {
+        e.preventDefault();
+        modals.notifications.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+      document.getElementById('openSettingsModal').addEventListener('click', e => {
+        e.preventDefault();
+        modals.settings.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+      document.getElementById('cancelProfile').addEventListener('click', () => {
+        modals.profile.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+      document.getElementById('saveProfile').addEventListener('click', () => {
+        showToast('Profile saved!');
+        modals.profile.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+      document.getElementById('cancelNotifications').addEventListener('click', () => {
+        modals.notifications.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+      document.getElementById('saveNotifications').addEventListener('click', () => {
+        showToast('Notification preferences saved!');
+        modals.notifications.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+      document.getElementById('cancelSettings').addEventListener('click', () => {
+        modals.settings.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+      document.getElementById('saveSettings').addEventListener('click', () => {
+        showToast('Appearance settings saved!');
+        modals.settings.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+      document.getElementById('closeViewPost').addEventListener('click', () => {
+        modals.viewPost.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+      document.getElementById('cancelEditPost').addEventListener('click', () => {
+        modals.editPost.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+    });
+  </script>
+</body>
+</html>

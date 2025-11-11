@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Browse Opportunities — Studevo</title>
+  <style>
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    body { 
+      font-family: 'Segoe UI', sans-serif; 
+      background: #f8fafc; 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s ease;
+    }
+    .container { 
+      width: 95%;
+      max-width: 1400px; 
+      margin: 0 auto; 
+      padding: 20px;
+      flex: 1;
+    }
+    header { 
+      background: white; 
+      padding: 15px 0; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .header-content { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      width: 95%;
+      max-width: 1400px; 
+      margin: 0 auto; 
+    }
+    .logo { 
+      font-size: 24px; 
+      font-weight: 800; 
+      color: #3b82f6; 
+      text-decoration: none;
+    }
+    .logo span { 
+      color: #1e40af; 
+    }
+    .user-menu { 
+      display: flex; 
+      align-items: center; 
+      gap: 15px; 
+    }
+    .header-btn {
+      background: #3b82f6;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+      position: relative;
+      font-size: 18px;
+    }
+    .header-btn:hover {
+      background: #2563eb;
+    }
+    .logout-btn {
+      background: #ef4444;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .logout-btn:hover {
+      background: #dc2626;
+    }
+    .notification-bell {
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #f8fafc;
+      color: #64748b;
+      transition: all 0.3s ease;
+    }
+    .notification-bell:hover {
+      background: #dbeafe;
+      color: #3b82f6;
+    }
+    .notification-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: #ef4444;
+      color: white;
+      font-size: 10px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    main { 
+      padding: 40px 0; 
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .dashboard-header { 
+      text-align: center; 
+      margin-bottom: 40px; 
+    }
+    .dashboard-header h1 { 
+      font-size: 32px; 
+      color: #1e293b; 
+      margin-bottom: 10px; 
+    }
+    .dashboard-header p { 
+      color: #64748b; 
+    }
+    .browse-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .search-container {
+      display: flex;
+      gap: 1rem;
+      flex: 1;
+      max-width: 600px;
+    }
+    .search-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .filters {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .view-toggle-group {
+      display: flex;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 12px;
+    }
+    .view-toggle-btn {
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      color: #64748b;
+      transition: all 0.2s ease;
+    }
+    .view-toggle-btn.active {
+      background: white;
+      color: #3b82f6;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .view-toggle-btn:hover:not(.active) {
+      background: #e2e8f0;
+      color: #475569;
+    }
+    .opportunities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+    .opportunities-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .opportunity-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .opportunity-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .card-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .company-logo {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: #3b82f6;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .job-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #1e293b;
+    }
+    .company-name {
+      color: #3b82f6;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      color: #64748b;
+      font-size: 0.875rem;
+    }
+    .job-type {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .job-type.volunteering { background: #dcfce7; color: #16a34a; }
+    .job-type.internship { background: #dbeafe; color: #1d4ed8; }
+    .job-type.job { background: #fef3c7; color: #d97706; }
+    .job-type.project { background: #ede9fe; color: #7c3aed; }
+    .card-actions {
+      padding: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #3b82f6;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: background 0.3s;
+      border: none;
+      cursor: pointer;
+      min-width: 120px;
+      text-align: center;
+    }
+    .btn:hover {
+      background: #2563eb;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 2px solid #3b82f6;
+      color: #3b82f6;
+    }
+    .btn-outline:hover {
+      background: #3b82f6;
+      color: white;
+    }
+    .btn-icon {
+      padding: 0.5rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f8fafc;
+      color: #3b82f6;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .btn-icon:hover {
+      background: #e2e8f0;
+      border-color: #3b82f6;
+    }
+    .btn-icon.saved {
+      background: #dcfce7;
+      color: #16a34a;
+      border-color: #16a34a;
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal {
+      background: white;
+      width: 80%;
+      max-width: 800px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    .modal-overlay.active .modal {
+      transform: scale(1);
+    }
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: #94a3b8;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .close-modal:hover {
+      background: #f1f5f9;
+      color: #334155;
+    }
+    .modal-content {
+      padding: 2rem;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    footer {
+      background-color: #1e293b;
+      color: #cbd5e1;
+      padding: 20px 0;
+      font-size: 14px;
+      margin-top: auto;
+    }
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 95%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+    .footer-links a {
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover {
+      color: white;
+    }
+    .copyright {
+      text-align: right;
+    }
+    .custom-dropdown {
+      position: relative;
+      width: 150px;
+    }
+    .dropdown-trigger {
+      padding: 10px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      background: white;
+      font-size: 0.95rem;
+      color: #64748b;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dropdown-trigger:hover {
+      border-color: #3b82f6;
+    }
+    .dropdown-trigger::after {
+      content: '▼';
+      font-size: 0.75rem;
+      transition: transform 0.2s;
+    }
+    .dropdown-trigger.open::after {
+      transform: rotate(180deg);
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 1000;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+      margin-top: -2px;
+    }
+    .dropdown-menu.active {
+      display: block;
+    }
+    .dropdown-item {
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      color: #334155;
+      font-size: 0.95rem;
+    }
+    .dropdown-item:hover {
+      background: #f1f5f9;
+    }
+    .dropdown-item.selected {
+      background: #dbeafe;
+      color: #3b82f6;
+    }
+    .settings-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .settings-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 200px;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 1000;
+      display: none;
+      margin-top: 8px;
+    }
+    .settings-menu.active {
+      display: block;
+    }
+    .settings-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+      color: #334155;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .settings-item:hover {
+      background: #f1f5f9;
+    }
+    .settings-item i {
+      font-size: 18px;
+    }
+    body.dark-mode {
+      background: #111827;
+      color: #f3f4f6;
+    }
+    body.dark-mode .container,
+    body.dark-mode .opportunity-card,
+    body.dark-mode .modal,
+    body.dark-mode .dropdown-menu,
+    body.dark-mode .settings-menu {
+      background: #1f2937;
+    }
+    body.dark-mode .card-header,
+    body.dark-mode .modal-header {
+      border-color: #374151;
+    }
+    body.dark-mode .company-logo {
+      background: #3b82f6;
+    }
+    body.dark-mode .job-title,
+    body.dark-mode .company-name,
+    body.dark-mode .card-meta,
+    body.dark-mode .modal-title {
+      color: #f3f4f6;
+    }
+    body.dark-mode .job-type {
+      color: #ffffff;
+    }
+    body.dark-mode .btn {
+      background: #3b82f6;
+      color: white;
+    }
+    body.dark-mode .btn-outline {
+      border-color: #3b82f6;
+      color: #3b82f6;
+    }
+    body.dark-mode .btn-icon {
+      background: #374151;
+      color: #f3f4f6;
+      border-color: #4b5563;
+    }
+    body.dark-mode .btn-icon.saved {
+      background: #10b981;
+      color: white;
+      border-color: #10b981;
+    }
+    body.dark-mode .notification-bell {
+      background: #374151;
+      color: #f3f4f6;
+    }
+    body.dark-mode .notification-badge {
+      background: #ef4444;
+    }
+    body.dark-mode .footer-content {
+      background: #111827;
+    }
+    body.dark-mode .footer-links a {
+      color: #cbd5e1;
+    }
+    body.dark-mode .footer-links a:hover {
+      color: white;
+    }
+    .opportunities-list .card-actions {
+      justify-content: flex-start;
+    }
+    @media (max-width: 1200px) {
+      .modal { width: 90%; }
+      .opportunities-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+    }
+    @media (max-width: 768px) {
+      .browse-header { flex-direction: column; align-items: stretch; }
+      .search-container { width: 100%; }
+      .filters { flex-direction: column; }
+      .custom-dropdown { width: 100%; }
+      .opportunities-grid, .opportunities-list { grid-template-columns: 1fr; }
+      .view-toggle-group { width: 100%; justify-content: center; }
+      .header-content { width: 90%; }
+      .container { width: 90%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <a href="student-dashboard.html" class="logo">Stud<span>evo</span></a>
+      <div class="user-menu">
+        <div class="notification-bell" id="notificationBell">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge" id="notificationBadge">3</span>
+        </div>
+        <button class="header-btn" title="Profile">👤</button>
+        <div class="settings-dropdown" id="settingsDropdown">
+          <button class="header-btn" title="Settings">⚙️</button>
+          <div class="settings-menu">
+            <div class="settings-item" id="toggleDarkMode">
+              <i>🌙</i> Toggle Dark Mode
+            </div>
+          </div>
+        </div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+      </div>
+    </div>
+  </header>
+  <main class="container">
+    <div class="dashboard-header">
+      <h1>Browse Opportunities</h1>
+      <p>Find the perfect opportunity to enhance your portfolio and study abroad.</p>
+    </div>
+    <div style="margin-bottom: 20px; text-align: left;">
+      <a href="student-dashboard.html" class="btn btn-outline" style="padding: 8px 16px; font-size: 14px; display: inline-flex; align-items: center; gap: 6px;">
+        ← Back to Dashboard
+      </a>
+    </div>
+    <div class="browse-header">
+      <div class="search-container">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search opportunities by title, company, or keywords...">
+      </div>
+      <div class="view-toggle-group">
+        <button class="view-toggle-btn active" data-view="grid">Grid</button>
+        <button class="view-toggle-btn" data-view="list">List</button>
+      </div>
+    </div>
+    <div class="filters">
+      <div class="custom-dropdown" id="typeDropdown">
+        <div class="dropdown-trigger" data-value="">All Types</div>
+        <div class="dropdown-menu">
+          <div class="dropdown-item" data-value="">All Types</div>
+          <div class="dropdown-item" data-value="volunteering">Volunteering</div>
+          <div class="dropdown-item" data-value="internship">Internship</div>
+          <div class="dropdown-item" data-value="job">Job</div>
+          <div class="dropdown-item" data-value="project">Project</div>
+        </div>
+      </div>
+      <div class="custom-dropdown" id="favoritesDropdown">
+        <div class="dropdown-trigger" data-value="">All Opportunities</div>
+        <div class="dropdown-menu">
+          <div class="dropdown-item" data-value="">All Opportunities</div>
+          <div class="dropdown-item" data-value="favorites">Favorites Only</div>
+        </div>
+      </div>
+      <div class="custom-dropdown" id="sortDropdown">
+        <div class="dropdown-trigger" data-value="date">Sort by Date</div>
+        <div class="dropdown-menu">
+          <div class="dropdown-item" data-value="date">Sort by Date</div>
+          <div class="dropdown-item" data-value="relevance">Sort by Relevance</div>
+        </div>
+      </div>
+    </div>
+    <div class="opportunities-grid" id="opportunitiesContainer">
+    </div>
+    <div class="pagination" style="text-align: center; margin-top: 2rem;">
+      <button class="btn btn-outline" id="loadMoreBtn" disabled>Load More Opportunities</button>
+    </div>
+  </main>
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <a href="student-dashboard.html" class="logo" style="color: white; font-size: 20px; text-decoration: none;">Stud<span>evo</span></a>
+      </div>
+      <div class="footer-links">
+        <a href="#">Contact</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#" id="helpSupport">Help & Support</a>
+      </div>
+      <div class="copyright">
+        &copy; 2024 Studevo. All rights reserved.
+      </div>
+    </div>
+  </footer>
+  <!-- Opportunity Detail Modal -->
+  <div class="modal-overlay" id="opportunityModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Opportunity Details</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-content" id="modalContent">
+      </div>
+    </div>
+  </div>
+  <script>
+    let opportunities = [];
+    let favorites = JSON.parse(localStorage.getItem('Studevo_favorites') || '[]');
+    let currentView = 'grid';
+    let currentFilters = {
+      type: '',
+      favoritesOnly: false,
+      sort: 'date'
+    };
+    const container = document.getElementById('opportunitiesContainer');
+    const searchInput = document.getElementById('searchInput');
+    const modal = document.getElementById('opportunityModal');
+    async function fetchOpportunities() {
+      try {
+        const res = await fetch('http://localhost:5000/api/posts');
+        if (!res.ok) throw new Error('Failed to load opportunities');
+        const posts = await res.json();
+        opportunities = posts.map(post => ({
+          id: post._id,
+          title: post.title,
+          company: post.orgName || 'Organization',
+          location: post.location || 'Remote',
+          type: post.type.toLowerCase(),
+          slots: 'Apply now',
+          posted: formatRelativeDate(post.createdAt),
+          description: post.description,
+          requirements: 'See description',
+          isFavorite: favorites.includes(post._id),
+          applicationLink: post.applicationLink || 'https://example.com/apply' // ✅ fallback
+        }));
+        renderOpportunities();
+      } catch (err) {
+        console.error('Error:', err);
+        container.innerHTML = '<div style="text-align:center;padding:3rem;color:red;">Failed to load opportunities. Is the backend running?</div>';
+      }
+    }
+    function formatRelativeDate(dateStr) {
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diffTime = Math.abs(now - date);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays === 1) return '1 day ago';
+      if (diffDays <= 7) return `${diffDays} days ago`;
+      if (diffDays <= 30) return 'Within a month';
+      return 'Over a month ago';
+    }
+    function renderOpportunities() {
+      const term = searchInput.value.toLowerCase();
+      let filtered = opportunities.filter(opp => {
+        const matchesSearch = !term || opp.title.toLowerCase().includes(term) || opp.company.toLowerCase().includes(term);
+        const matchesType = !currentFilters.type || opp.type === currentFilters.type;
+        const matchesFav = !currentFilters.favoritesOnly || opp.isFavorite;
+        return matchesSearch && matchesType && matchesFav;
+      });
+      if (currentFilters.sort === 'date') {
+        filtered.sort((a, b) => new Date(b.posted) - new Date(a.posted));
+      }
+      container.className = currentView === 'list' ? 'opportunities-list' : 'opportunities-grid';
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:3rem;color:#64748b;">No opportunities found.</div>';
+        return;
+      }
+      container.innerHTML = filtered.map(opp => {
+        const firstLetter = opp.company.charAt(0).toUpperCase();
+        return `
+          <div class="opportunity-card">
+            <div class="card-header">
+              <div class="company-logo">${firstLetter}</div>
+              <h3 class="job-title">${opp.title}</h3>
+              <p class="company-name">${opp.company}</p>
+              <div class="card-meta">
+                <span>📍 ${opp.location}</span>
+                <span class="job-type ${opp.type}">${opp.type.charAt(0).toUpperCase() + opp.type.slice(1)}</span>
+                <span>👥 ${opp.slots}</span>
+                <span>📅 ${opp.posted}</span>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="btn view-details" data-id="${opp.id}">View Details</button>
+              <button class="btn-icon ${opp.isFavorite ? 'saved' : ''}" data-fav="${opp.id}">
+                ${opp.isFavorite ? '❤️' : '🤍'}
+              </button>
+              <!-- ✅ DIRECT QUICK APPLY -->
+              <button class="btn btn-outline" onclick="window.open('${opp.applicationLink}', '_blank')">Quick Apply</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      // Reattach event listeners
+      document.querySelectorAll('.view-details').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const opp = opportunities.find(o => o.id === e.target.dataset.id);
+          showOpportunityModal(opp);
+        });
+      });
+      document.querySelectorAll('[data-fav]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          toggleFavorite(e.target.dataset.fav);
+        });
+      });
+    }
+    function showOpportunityModal(opp) {
+      document.getElementById('modalTitle').textContent = opp.title;
+      document.getElementById('modalContent').innerHTML = `
+        <p><strong>Company:</strong> ${opp.company}</p>
+        <p><strong>Location:</strong> ${opp.location}</p>
+        <p><strong>Type:</strong> <span class="job-type ${opp.type}">${opp.type.charAt(0).toUpperCase() + opp.type.slice(1)}</span></p>
+        <p><strong>Posted:</strong> ${opp.posted}</p>
+        <div style="margin-top: 1.5rem;">
+          <h3>Description</h3>
+          <p>${opp.description}</p>
+        </div>
+        <div style="margin-top: 1.5rem;">
+          <h3>Requirements</h3>
+          <p>${opp.requirements}</p>
+        </div>
+        <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+          <button class="btn" onclick="window.open('${opp.applicationLink}', '_blank')">Apply Now</button>
+          <button class="btn btn-outline" onclick="saveOpportunity('${opp.id}')">
+            ${favorites.includes(opp.id) ? 'Saved' : 'Save'}
+          </button>
+        </div>
+      `;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeAllModals() {
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+    function toggleFavorite(id) {
+      const idx = favorites.indexOf(id);
+      if (idx > -1) {
+        favorites.splice(idx, 1);
+      } else {
+        favorites.push(id);
+      }
+      localStorage.setItem('Studevo_favorites', JSON.stringify(favorites));
+      opportunities.forEach(opp => opp.isFavorite = favorites.includes(opp.id));
+      renderOpportunities();
+    }
+    function initDropdown(id, onChange) {
+      const dropdown = document.getElementById(id);
+      const trigger = dropdown.querySelector('.dropdown-trigger');
+      const menu = dropdown.querySelector('.dropdown-menu');
+      trigger.addEventListener('click', () => {
+        menu.classList.toggle('active');
+        trigger.classList.toggle('open');
+      });
+      menu.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', () => {
+          trigger.textContent = item.textContent + ' ▼';
+          trigger.dataset.value = item.dataset.value;
+          menu.classList.remove('active');
+          trigger.classList.remove('open');
+          onChange(item.dataset.value);
+        });
+      });
+      document.addEventListener('click', e => {
+        if (!dropdown.contains(e.target)) {
+          menu.classList.remove('active');
+          trigger.classList.remove('open');
+        }
+      });
+    }
+    initDropdown('typeDropdown', val => {
+      currentFilters.type = val;
+      renderOpportunities();
+    });
+    initDropdown('favoritesDropdown', val => {
+      currentFilters.favoritesOnly = val === 'favorites';
+      renderOpportunities();
+    });
+    initDropdown('sortDropdown', val => {
+      currentFilters.sort = val;
+      renderOpportunities();
+    });
+    searchInput.addEventListener('input', renderOpportunities);
+    document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentView = btn.dataset.view;
+        renderOpportunities();
+      });
+    });
+    document.querySelectorAll('.close-modal').forEach(btn => {
+      btn.addEventListener('click', closeAllModals);
+    });
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) closeAllModals();
+      });
+    });
+    document.getElementById('helpSupport').addEventListener('click', e => {
+      e.preventDefault();
+      alert('Contact studevo.ge@gmail.com');
+    });
+    document.getElementById('toggleDarkMode').addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    });
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+    }
+    function logout() {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    }
+    function applyToOpportunity(id) {
+      const opp = opportunities.find(o => o.id === id);
+      if (opp && opp.applicationLink) {
+        window.open(opp.applicationLink, '_blank');
+      } else {
+        alert('No application link available.');
+      }
+    }
+    function saveOpportunity(id) {
+      toggleFavorite(id);
+      const opp = opportunities.find(o => o.id === id);
+      showOpportunityModal(opp);
+    }
+    fetchOpportunities();
+  </script>
+</body>
+</html>
