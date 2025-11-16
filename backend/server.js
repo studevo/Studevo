@@ -23,8 +23,8 @@ app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // CORS — ONLY allow your live domain (add localhost during dev if needed)
 const allowedOrigins = [
-  'https://studevo.onrender.com'
-  // Add 'http://localhost:3000' temporarily during local dev if needed
+  'https://studevoge.onrender.com'
+  
 ];
 
 app.use(cors({
