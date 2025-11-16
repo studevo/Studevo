@@ -44,16 +44,10 @@ const postSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
-  // ✅ NEW FIELD
   applicationLink: {
     type: String,
-    required: true,
-    validate: {
-      validator: function(v) {
-        return /^(https?:\/\/)/.test(v); // Must start with http:// or https://
-      },
-      message: 'Application link must be a valid URL starting with http:// or https://'
-    }
+    trim: true,
+    default: ''
   },
   status: {
     type: String,

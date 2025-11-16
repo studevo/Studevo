@@ -711,6 +711,7 @@
     const container = document.getElementById('opportunitiesContainer');
     const searchInput = document.getElementById('searchInput');
     const modal = document.getElementById('opportunityModal');
+
     async function fetchOpportunities() {
       try {
         const res = await fetch('http://localhost:5000/api/posts');
@@ -727,7 +728,7 @@
           description: post.description,
           requirements: 'See description',
           isFavorite: favorites.includes(post._id),
-          applicationLink: post.applicationLink || 'https://example.com/apply' // ✅ fallback
+          applicationLink: post.applicationLink || 'https://example.com/apply' // ✅ Fixed: removed trailing spaces
         }));
         renderOpportunities();
       } catch (err) {
@@ -735,6 +736,7 @@
         container.innerHTML = '<div style="text-align:center;padding:3rem;color:red;">Failed to load opportunities. Is the backend running?</div>';
       }
     }
+
     function formatRelativeDate(dateStr) {
       const date = new Date(dateStr);
       const now = new Date();
@@ -745,6 +747,7 @@
       if (diffDays <= 30) return 'Within a month';
       return 'Over a month ago';
     }
+
     function renderOpportunities() {
       const term = searchInput.value.toLowerCase();
       let filtered = opportunities.filter(opp => {
@@ -753,18 +756,22 @@
         const matchesFav = !currentFilters.favoritesOnly || opp.isFavorite;
         return matchesSearch && matchesType && matchesFav;
       });
+
       if (currentFilters.sort === 'date') {
         filtered.sort((a, b) => new Date(b.posted) - new Date(a.posted));
       }
+
       container.className = currentView === 'list' ? 'opportunities-list' : 'opportunities-grid';
+
       if (filtered.length === 0) {
         container.innerHTML = '<div style="text-align:center;padding:3rem;color:#64748b;">No opportunities found.</div>';
         return;
       }
+
       container.innerHTML = filtered.map(opp => {
         const firstLetter = opp.company.charAt(0).toUpperCase();
         return `
-          <div class="opportunity-card">
+          <div class="opportunity-card" data-id="${opp.id}">
             <div class="card-header">
               <div class="company-logo">${firstLetter}</div>
               <h3 class="job-title">${opp.title}</h3>
@@ -781,25 +788,39 @@
               <button class="btn-icon ${opp.isFavorite ? 'saved' : ''}" data-fav="${opp.id}">
                 ${opp.isFavorite ? '❤️' : '🤍'}
               </button>
-              <!-- ✅ DIRECT QUICK APPLY -->
-              <button class="btn btn-outline" onclick="window.open('${opp.applicationLink}', '_blank')">Quick Apply</button>
+              <button class="btn btn-outline quick-apply" data-link="${opp.applicationLink}">Quick Apply</button>
             </div>
           </div>
         `;
       }).join('');
-      // Reattach event listeners
+
+      // Reattach event listeners safely
       document.querySelectorAll('.view-details').forEach(btn => {
         btn.addEventListener('click', e => {
           const opp = opportunities.find(o => o.id === e.target.dataset.id);
           showOpportunityModal(opp);
         });
       });
+
       document.querySelectorAll('[data-fav]').forEach(btn => {
         btn.addEventListener('click', e => {
           toggleFavorite(e.target.dataset.fav);
         });
       });
+
+      // ✅ FIXED: Safe Quick Apply via event delegation
+      document.querySelectorAll('.quick-apply').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const link = e.target.dataset.link;
+          if (link && link !== 'https://example.com/apply') {
+            window.open(link, '_blank');
+          } else {
+            alert('No valid application link provided.');
+          }
+        });
+      });
     }
+
     function showOpportunityModal(opp) {
       document.getElementById('modalTitle').textContent = opp.title;
       document.getElementById('modalContent').innerHTML = `
@@ -816,19 +837,32 @@
           <p>${opp.requirements}</p>
         </div>
         <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-          <button class="btn" onclick="window.open('${opp.applicationLink}', '_blank')">Apply Now</button>
+          <button class="btn apply-from-modal" data-link="${opp.applicationLink}">Apply Now</button>
           <button class="btn btn-outline" onclick="saveOpportunity('${opp.id}')">
             ${favorites.includes(opp.id) ? 'Saved' : 'Save'}
           </button>
         </div>
       `;
+
+      // Attach apply button listener in modal
+      document.querySelector('.apply-from-modal')?.addEventListener('click', e => {
+        const link = e.target.dataset.link;
+        if (link && link !== 'https://example.com/apply') {
+          window.open(link, '_blank');
+        } else {
+          alert('No valid application link provided.');
+        }
+      });
+
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
+
     function closeAllModals() {
       modal.classList.remove('active');
       document.body.style.overflow = 'auto';
     }
+
     function toggleFavorite(id) {
       const idx = favorites.indexOf(id);
       if (idx > -1) {
@@ -840,6 +874,7 @@
       opportunities.forEach(opp => opp.isFavorite = favorites.includes(opp.id));
       renderOpportunities();
     }
+
     function initDropdown(id, onChange) {
       const dropdown = document.getElementById(id);
       const trigger = dropdown.querySelector('.dropdown-trigger');
@@ -864,6 +899,7 @@
         }
       });
     }
+
     initDropdown('typeDropdown', val => {
       currentFilters.type = val;
       renderOpportunities();
@@ -876,7 +912,9 @@
       currentFilters.sort = val;
       renderOpportunities();
     });
+
     searchInput.addEventListener('input', renderOpportunities);
+
     document.querySelectorAll('.view-toggle-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.remove('active'));
@@ -885,42 +923,42 @@
         renderOpportunities();
       });
     });
+
     document.querySelectorAll('.close-modal').forEach(btn => {
       btn.addEventListener('click', closeAllModals);
     });
+
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
       overlay.addEventListener('click', e => {
         if (e.target === overlay) closeAllModals();
       });
     });
+
     document.getElementById('helpSupport').addEventListener('click', e => {
       e.preventDefault();
       alert('Contact studevo.ge@gmail.com');
     });
+
     document.getElementById('toggleDarkMode').addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
       localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
     });
+
     if (localStorage.getItem('darkMode') === 'true') {
       document.body.classList.add('dark-mode');
     }
+
     function logout() {
       localStorage.clear();
       window.location.href = 'index.html';
     }
-    function applyToOpportunity(id) {
-      const opp = opportunities.find(o => o.id === id);
-      if (opp && opp.applicationLink) {
-        window.open(opp.applicationLink, '_blank');
-      } else {
-        alert('No application link available.');
-      }
-    }
+
     function saveOpportunity(id) {
       toggleFavorite(id);
       const opp = opportunities.find(o => o.id === id);
       showOpportunityModal(opp);
     }
+
     fetchOpportunities();
   </script>
 </body>

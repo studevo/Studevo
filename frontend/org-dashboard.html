@@ -716,7 +716,7 @@
       </div>
     </div>
   </footer>
-  <!-- Modals (same as before, only CREATE POST MODAL changes) -->
+  <!-- Modals -->
   <div class="modal-overlay" id="orgApplicationsModal">
     <div class="modal">
       <div class="modal-header">
@@ -887,7 +887,7 @@
       </div>
     </div>
   </div>
-  <!-- CREATE POST MODAL WITH APPLICATION LINK -->
+  <!-- CREATE POST MODAL -->
   <div class="modal-overlay" id="createPostModal">
     <div class="modal" style="max-width: 650px;">
       <div class="modal-header">
@@ -930,7 +930,6 @@
             <label for="postDeadline">Application Deadline</label>
             <input type="date" id="postDeadline">
           </div>
-          <!-- ✅ NEW FIELD -->
           <div class="form-group">
             <label for="applicationLink">Application Link (Optional)</label>
             <input type="url" id="applicationLink" placeholder="https://example.com/apply">
@@ -947,6 +946,7 @@
       </div>
     </div>
   </div>
+  <!-- EDIT POST MODAL -->
   <div class="modal-overlay" id="editPostModal">
     <div class="modal" style="max-width: 650px;">
       <div class="modal-header">
@@ -989,6 +989,13 @@
           <div class="form-group">
             <label for="editDeadline">Application Deadline</label>
             <input type="date" id="editDeadline">
+          </div>
+          <div class="form-group">
+            <label for="editApplicationLink">Application Link (Optional)</label>
+            <input type="url" id="editApplicationLink" placeholder="https://example.com/apply">
+            <small style="color: #64748b; display: block; margin-top: 4px;">
+              Students will be redirected here when they click “Quick Apply”.
+            </small>
           </div>
         </form>
       </div>
@@ -1070,14 +1077,17 @@
     let currentUser = null;
     let currentOrgId = null;
     let pendingDeleteId = null;
+
     function logout() {
       localStorage.clear();
       window.location.href = 'index.html';
     }
+
     document.getElementById('helpSupport').addEventListener('click', function(e) {
       e.preventDefault();
       showToast('Help & Support section would open here.');
     });
+
     const modals = {
       applications: document.getElementById('orgApplicationsModal'),
       calendar: document.getElementById('orgCalendarModal'),
@@ -1090,6 +1100,7 @@
       confirmDelete: document.getElementById('confirmDeleteModal'),
       confirmPublish: document.getElementById('confirmPublishModal')
     };
+
     Object.values(modals).forEach(modal => {
       const closeBtn = modal.querySelector('.close-modal');
       if (closeBtn) closeBtn.addEventListener('click', () => {
@@ -1103,6 +1114,7 @@
         }
       });
     });
+
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
       overlay.addEventListener('click', e => {
         if (e.target === overlay) {
@@ -1117,6 +1129,7 @@
         }
       });
     });
+
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
         const active = document.querySelector('.modal-overlay.active');
@@ -1132,6 +1145,7 @@
         }
       }
     });
+
     let currentView = 'list';
     document.getElementById('listViewBtn').addEventListener('click', () => {
       currentView = 'list';
@@ -1145,21 +1159,24 @@
       document.getElementById('listViewBtn').classList.remove('active');
       renderPosts();
     });
+
     document.getElementById('openCreatePostModal').addEventListener('click', e => {
       e.preventDefault();
       modals.createPost.classList.add('active');
       document.body.style.overflow = 'hidden';
     });
+
     document.getElementById('cancelCreatePost').addEventListener('click', () => {
       modals.createPost.classList.remove('active');
       document.body.style.overflow = 'auto';
       document.getElementById('createPostForm').reset();
     });
+
     const getDateValue = (id) => {
       const val = document.getElementById(id).value;
       return val ? val : null;
     };
-    // ✅ UPDATED: Save As Draft with applicationLink
+
     document.getElementById('saveAsDraft').addEventListener('click', async (e) => {
       e.preventDefault();
       const title = document.getElementById('postTitle').value.trim();
@@ -1206,7 +1223,7 @@
         console.error(error);
       }
     });
-    // ✅ UPDATED: Publish Post with applicationLink
+
     document.getElementById('publishPost').addEventListener('click', async (e) => {
       e.preventDefault();
       const title = document.getElementById('postTitle').value.trim();
@@ -1228,7 +1245,7 @@
       document.body.style.overflow = 'hidden';
       modals.confirmPublish.dataset.applicationLink = applicationLink;
     });
-    // ✅ UPDATED: Confirm Publish with stored link
+
     document.getElementById('confirmPublish').addEventListener('click', async () => {
       const title = document.getElementById('postTitle').value.trim();
       const type = document.getElementById('postType').value;
@@ -1271,10 +1288,12 @@
         console.error('Publish network error:', error);
       }
     });
+
     document.getElementById('cancelPublish').addEventListener('click', () => {
       modals.confirmPublish.classList.remove('active');
       document.body.style.overflow = 'auto';
     });
+
     function renderPosts() {
       const container = document.getElementById('postsContainer');
       if (!window.postsData || window.postsData.length === 0) {
@@ -1352,6 +1371,7 @@
         });
       });
     }
+
     async function loadPosts() {
       if (!currentOrgId) {
         document.getElementById('postsContainer').innerHTML = '<p style="text-align:center;color:red;">Please log in to view your posts.</p>';
@@ -1372,7 +1392,7 @@
         document.getElementById('postsContainer').innerHTML = '<p style="text-align:center;color:red;">Failed to load posts. Is the backend running?</p>';
       }
     }
-    // ... (rest of script unchanged — loadRecentApplicants, loadUpcomingEvents, etc.)
+
     async function loadRecentApplicants() {
       if (!currentOrgId) return;
       try {
@@ -1395,6 +1415,7 @@
         console.error('Error loading recent applicants:', err);
       }
     }
+
     async function loadUpcomingEvents() {
       if (!currentOrgId) return;
       try {
@@ -1417,6 +1438,7 @@
         console.error('Error loading upcoming events:', err);
       }
     }
+
     async function loadApplicationsTable() {
       if (!currentOrgId) return;
       try {
@@ -1443,6 +1465,7 @@
         document.getElementById('applicationsTableBody').innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:red;">Failed to load applications</td></tr>';
       }
     }
+
     async function showViewPost(id) {
       try {
         const response = await fetch(`http://localhost:5000/api/posts/${id}`);
@@ -1466,6 +1489,7 @@
         console.error(err);
       }
     }
+
     async function showEditPost(id) {
       try {
         const response = await fetch(`http://localhost:5000/api/posts/${id}`);
@@ -1479,6 +1503,7 @@
           document.getElementById('editDurationStart').value = post.durationStart ? new Date(post.durationStart).toISOString().split('T')[0] : '';
           document.getElementById('editDurationEnd').value = post.durationEnd ? new Date(post.durationEnd).toISOString().split('T')[0] : '';
           document.getElementById('editDeadline').value = post.deadline ? new Date(post.deadline).toISOString().split('T')[0] : '';
+          document.getElementById('editApplicationLink').value = post.applicationLink || '';
           const publishBtn = document.getElementById('publishFromEdit');
           if (post.status === 'draft') {
             publishBtn.style.display = 'inline-block';
@@ -1495,10 +1520,12 @@
         console.error(err);
       }
     }
+
     document.getElementById('updatePost').addEventListener('click', async (e) => {
       e.preventDefault();
       const id = document.getElementById('editPostId').value;
       const location = document.getElementById('editLocation').value.trim() || 'Remote';
+      const applicationLink = document.getElementById('editApplicationLink').value.trim();
       const formData = {
         title: document.getElementById('editTitle').value,
         type: document.getElementById('editType').value,
@@ -1506,7 +1533,8 @@
         location,
         durationStart: document.getElementById('editDurationStart').value || null,
         durationEnd: document.getElementById('editDurationEnd').value || null,
-        deadline: document.getElementById('editDeadline').value || null
+        deadline: document.getElementById('editDeadline').value || null,
+        applicationLink
       };
       try {
         const response = await fetch(`http://localhost:5000/api/posts/${id}`, {
@@ -1528,10 +1556,12 @@
         console.error(error);
       }
     });
+
     document.getElementById('publishFromEdit').addEventListener('click', async (e) => {
       e.preventDefault();
       const id = document.getElementById('editPostId').value;
       const location = document.getElementById('editLocation').value.trim() || 'Remote';
+      const applicationLink = document.getElementById('editApplicationLink').value.trim();
       const formData = {
         title: document.getElementById('editTitle').value,
         type: document.getElementById('editType').value,
@@ -1540,6 +1570,7 @@
         durationStart: document.getElementById('editDurationStart').value || null,
         durationEnd: document.getElementById('editDurationEnd').value || null,
         deadline: document.getElementById('editDeadline').value || null,
+        applicationLink,
         status: 'active'
       };
       try {
@@ -1562,16 +1593,19 @@
         console.error(error);
       }
     });
+
     function confirmDeletePost(id) {
       pendingDeleteId = id;
       modals.confirmDelete.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
+
     document.getElementById('cancelDelete').addEventListener('click', () => {
       modals.confirmDelete.classList.remove('active');
       document.body.style.overflow = 'auto';
       pendingDeleteId = null;
     });
+
     document.getElementById('confirmDelete').addEventListener('click', async () => {
       if (!pendingDeleteId) {
         showToast('No post selected for deletion.');
@@ -1595,6 +1629,7 @@
         console.error(error);
       }
     });
+
     function showToast(message, duration = 7000) {
       const toast = document.getElementById('toastNotification');
       toast.textContent = message;
@@ -1603,6 +1638,7 @@
         toast.style.opacity = '0';
       }, duration - 300);
     }
+
     let currentCalendarDate = new Date();
     function renderCalendar() {
       const year = currentCalendarDate.getFullYear();
@@ -1648,6 +1684,7 @@
         grid.appendChild(cell);
       }
     }
+
     function getEventsForDate(date) {
       const events = [];
       const today = new Date(date);
@@ -1683,6 +1720,7 @@
       });
       return events;
     }
+
     document.getElementById('prevMonth').addEventListener('click', () => {
       currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
       renderCalendar();
@@ -1691,6 +1729,7 @@
       currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
       renderCalendar();
     });
+
     document.getElementById('openOrgCalendarModal').addEventListener('click', e => {
       e.preventDefault();
       modals.calendar.classList.add('active');
@@ -1698,29 +1737,56 @@
       currentCalendarDate = new Date();
       renderCalendar();
     });
+
     function simulateLogin() {
-      currentOrgId = "660000000000000000000000";
-      currentUser = {
-        role: 'organization',
-        email: 'contact@techinnovations.com',
-        orgName: 'Tech Innovations Inc.'
-      };
+      const savedUserData = localStorage.getItem('studevoUser');
+      if (savedUserData) {
+        try {
+          currentUser = JSON.parse(savedUserData);
+          currentOrgId = currentUser.orgId || "660000000000000000000000";
+        } catch (e) {
+          console.error("Error parsing saved user ", e);
+          currentUser = null;
+        }
+      }
+
+      if (!currentUser) {
+        currentOrgId = "660000000000000000000000";
+        currentUser = {
+          role: 'organization',
+          email: 'contact@techinnovations.com',
+          orgName: 'Tech Innovations Inc.'
+        };
+      }
+
       document.getElementById('orgName').value = currentUser.orgName || '';
       document.getElementById('orgEmail').value = currentUser.email || '';
+      document.getElementById('orgWebsite').value = currentUser.website || '';
+      document.getElementById('orgDescription').value = currentUser.description || '';
+      if (currentUser.dataSharing) {
+        document.getElementById('dataSharing').value = currentUser.dataSharing;
+      }
+      if (currentUser.profileVisibility) {
+        document.getElementById('profileVisibility').value = currentUser.profileVisibility;
+      }
+
       loadPosts();
       loadRecentApplicants();
       loadUpcomingEvents();
       loadApplicationsTable();
       showToast('Welcome back, ' + currentUser.orgName + '!', 4000);
     }
+
     document.addEventListener('DOMContentLoaded', () => {
       simulateLogin();
+
       document.getElementById('openOrgApplicationsModal').addEventListener('click', e => {
         e.preventDefault();
         modals.applications.classList.add('active');
         document.body.style.overflow = 'hidden';
         loadApplicationsTable();
       });
+
       document.getElementById('openOrgCalendarModal').addEventListener('click', e => {
         e.preventDefault();
         modals.calendar.classList.add('active');
@@ -1728,52 +1794,84 @@
         currentCalendarDate = new Date();
         renderCalendar();
       });
+
       document.getElementById('openProfileBtn').addEventListener('click', e => {
         e.preventDefault();
         modals.profile.classList.add('active');
         document.body.style.overflow = 'hidden';
       });
+
       document.getElementById('notificationBell').addEventListener('click', e => {
         e.preventDefault();
         modals.notifications.classList.add('active');
         document.body.style.overflow = 'hidden';
       });
+
       document.getElementById('openSettingsModal').addEventListener('click', e => {
         e.preventDefault();
         modals.settings.classList.add('active');
         document.body.style.overflow = 'hidden';
       });
+
       document.getElementById('cancelProfile').addEventListener('click', () => {
         modals.profile.classList.remove('active');
         document.body.style.overflow = 'auto';
       });
+
       document.getElementById('saveProfile').addEventListener('click', () => {
+        const orgName = document.getElementById('orgName').value.trim();
+        const orgEmail = document.getElementById('orgEmail').value.trim();
+        const orgWebsite = document.getElementById('orgWebsite').value.trim();
+        const orgDescription = document.getElementById('orgDescription').value.trim();
+        const dataSharing = document.getElementById('dataSharing').value;
+        const profileVisibility = document.getElementById('profileVisibility').value;
+
+        if (!orgName || !orgEmail) {
+          showToast('Organization Name and Contact Email are required.');
+          return;
+        }
+
+        currentUser.orgName = orgName;
+        currentUser.email = orgEmail;
+        currentUser.website = orgWebsite;
+        currentUser.description = orgDescription;
+        currentUser.dataSharing = dataSharing;
+        currentUser.profileVisibility = profileVisibility;
+
+        localStorage.setItem('studevoUser', JSON.stringify(currentUser));
+
         showToast('Profile saved!');
         modals.profile.classList.remove('active');
         document.body.style.overflow = 'auto';
       });
+
       document.getElementById('cancelNotifications').addEventListener('click', () => {
         modals.notifications.classList.remove('active');
         document.body.style.overflow = 'auto';
       });
+
       document.getElementById('saveNotifications').addEventListener('click', () => {
         showToast('Notification preferences saved!');
         modals.notifications.classList.remove('active');
         document.body.style.overflow = 'auto';
       });
+
       document.getElementById('cancelSettings').addEventListener('click', () => {
         modals.settings.classList.remove('active');
         document.body.style.overflow = 'auto';
       });
+
       document.getElementById('saveSettings').addEventListener('click', () => {
         showToast('Appearance settings saved!');
         modals.settings.classList.remove('active');
         document.body.style.overflow = 'auto';
       });
+
       document.getElementById('closeViewPost').addEventListener('click', () => {
         modals.viewPost.classList.remove('active');
         document.body.style.overflow = 'auto';
       });
+
       document.getElementById('cancelEditPost').addEventListener('click', () => {
         modals.editPost.classList.remove('active');
         document.body.style.overflow = 'auto';
