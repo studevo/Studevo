@@ -1158,7 +1158,8 @@
       const email = document.getElementById('signinEmail').value.trim();
       const password = document.getElementById('signinPassword').value;
       try {
-        const res = await fetch('http://localhost:5000/api/auth/login', {
+        // ✅ FIXED: Use relative path — works on localhost AND Render
+        const res = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
@@ -1179,7 +1180,7 @@
           alert('Login failed: ' + (data.error || 'Invalid credentials'));
         }
       } catch (err) {
-        alert('Cannot connect to server. Is backend running on http://localhost:5000?');
+        alert('Cannot connect to server. Please check your internet connection.');
       }
     });
 
@@ -1217,7 +1218,8 @@
       }
 
       try {
-        const res = await fetch('http://localhost:5000/api/auth/register', {
+        // ✅ FIXED: Use relative path — works on localhost AND Render
+        const res = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -1229,7 +1231,7 @@
           alert('Registration failed: ' + (data.error || 'Unknown error'));
         }
       } catch (err) {
-        alert('Failed to connect to server. Ensure backend is running on port 5000.');
+        alert('Failed to connect to server. Please check your internet connection.');
       }
     });
 

@@ -1040,7 +1040,7 @@
     async function saveCvToBackend(data) {
       try {
         console.log('Sending CV data to backend:', data);
-        const response = await fetch('http://localhost:5000/api/cv', {
+        const response = await fetch('/api/cv', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
@@ -1067,7 +1067,7 @@
     async function loadCvFromBackend() {
       try {
         console.log('Loading CV for email:', user.email);
-        const response = await fetch(`http://localhost:5000/api/cv?email=${encodeURIComponent(user.email)}`);
+        const response = await fetch(`/api/cv?email=${encodeURIComponent(user.email)}`);
         
         const result = await response.json();
         console.log('CV Load response:', result);

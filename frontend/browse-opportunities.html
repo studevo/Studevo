@@ -714,7 +714,8 @@
 
     async function fetchOpportunities() {
       try {
-        const res = await fetch('http://localhost:5000/api/posts');
+        // ✅ FIXED: Use relative path — works on localhost AND Render
+        const res = await fetch('/api/posts');
         if (!res.ok) throw new Error('Failed to load opportunities');
         const posts = await res.json();
         opportunities = posts.map(post => ({

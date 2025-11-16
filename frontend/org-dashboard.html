@@ -1202,7 +1202,7 @@
         status: 'draft'
       };
       try {
-        const response = await fetch('http://localhost:5000/api/posts', {
+        const response = await fetch('/api/posts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
@@ -1266,7 +1266,7 @@
         status: 'active'
       };
       try {
-        const response = await fetch('http://localhost:5000/api/posts', {
+        const response = await fetch('/api/posts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
@@ -1378,7 +1378,7 @@
         return;
       }
       try {
-        const response = await fetch(`http://localhost:5000/api/posts?orgId=${currentOrgId}`);
+        const response = await fetch(`/api/posts?orgId=${currentOrgId}`);
         if (response.ok) {
           window.postsData = await response.json();
           renderPosts();
@@ -1396,7 +1396,7 @@
     async function loadRecentApplicants() {
       if (!currentOrgId) return;
       try {
-        const response = await fetch(`http://localhost:5000/api/applications/recent?orgId=${currentOrgId}`);
+        const response = await fetch(`/api/applications/recent?orgId=${currentOrgId}`);
         if (response.ok) {
           const apps = await response.json();
           const list = document.getElementById('recentApplicantsList');
@@ -1419,7 +1419,7 @@
     async function loadUpcomingEvents() {
       if (!currentOrgId) return;
       try {
-        const response = await fetch(`http://localhost:5000/api/events/upcoming?orgId=${currentOrgId}`);
+        const response = await fetch(`/api/events/upcoming?orgId=${currentOrgId}`);
         if (response.ok) {
           const events = await response.json();
           const list = document.getElementById('upcomingEventsList');
@@ -1442,7 +1442,7 @@
     async function loadApplicationsTable() {
       if (!currentOrgId) return;
       try {
-        const response = await fetch(`http://localhost:5000/api/applications?orgId=${currentOrgId}`);
+        const response = await fetch(`/api/applications?orgId=${currentOrgId}`);
         if (response.ok) {
           const apps = await response.json();
           const tbody = document.getElementById('applicationsTableBody');
@@ -1468,7 +1468,7 @@
 
     async function showViewPost(id) {
       try {
-        const response = await fetch(`http://localhost:5000/api/posts/${id}`);
+        const response = await fetch(`/api/posts/${id}`);
         if (response.ok) {
           const post = await response.json();
           document.getElementById('viewPostTitle').textContent = post.title;
@@ -1492,7 +1492,7 @@
 
     async function showEditPost(id) {
       try {
-        const response = await fetch(`http://localhost:5000/api/posts/${id}`);
+        const response = await fetch(`/api/posts/${id}`);
         if (response.ok) {
           const post = await response.json();
           document.getElementById('editPostId').value = post._id;
@@ -1537,7 +1537,7 @@
         applicationLink
       };
       try {
-        const response = await fetch(`http://localhost:5000/api/posts/${id}`, {
+        const response = await fetch(`/api/posts/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
@@ -1574,7 +1574,7 @@
         status: 'active'
       };
       try {
-        const response = await fetch(`http://localhost:5000/api/posts/${id}`, {
+        const response = await fetch(`/api/posts/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
@@ -1612,7 +1612,7 @@
         return;
       }
       try {
-        const response = await fetch(`http://localhost:5000/api/posts/${pendingDeleteId}`, {
+        const response = await fetch(`/api/posts/${pendingDeleteId}`, {
           method: 'DELETE'
         });
         if (response.ok) {
