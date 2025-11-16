@@ -85,7 +85,6 @@
     .logo span {
       color: #1e40af;
     }
-    /* ============================= */
 
     /* ===== HEADER ===== */
     header {
@@ -109,7 +108,6 @@
       margin: 0 auto;
     }
 
-    /* DESKTOP NAV */
     .desktop-nav ul {
       display: flex;
       list-style: none;
@@ -140,7 +138,6 @@
       background-color: #2563eb;
     }
 
-    /* BURGER MENU */
     .burger {
       display: none;
       flex-direction: column;
@@ -157,7 +154,6 @@
       border-radius: 2px;
     }
 
-    /* MOBILE MENU */
     .mobile-menu {
       display: none;
       position: absolute;
@@ -378,7 +374,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
       z-index: 9999;
       justify-content: center;
       align-items: center;
@@ -387,59 +384,179 @@
 
     .modal {
       background: white;
-      padding: 40px 30px;
-      border-radius: 20px;
-      max-width: 550px;
+      border-radius: 24px;
       width: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow: hidden;
       position: relative;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 769px) {
+      .modal {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .modal-left {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      padding: 40px;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (min-width: 769px) {
+      .modal-left {
+        display: flex;
+      }
+    }
+
+    .modal-left::before,
+    .modal-left::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-left::before {
+      width: 200px;
+      height: 200px;
+      top: -60px;
+      right: -60px;
+    }
+
+    .modal-left::after {
+      width: 150px;
+      height: 150px;
+      bottom: -40px;
+      left: -40px;
+    }
+
+    .modal-left h3 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .modal-left p {
+      opacity: 0.9;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    .modal-left ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-left li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+    }
+
+    .modal-left li::before {
+      content: '✓';
+      width: 24px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .modal-right {
+      display: flex;
+      flex-direction: column;
+      max-height: 90vh;
+    }
+
+    .modal-header-top {
+      padding: 24px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header-top h2 {
+      font-size: 24px;
+      color: #1e293b;
+    }
+
+    .modal-header-top p {
+      font-size: 14px;
+      color: #64748b;
+      margin-top: 4px;
     }
 
     .close-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
       background: none;
       border: none;
       font-size: 28px;
       cursor: pointer;
       color: #94a3b8;
-      transition: color 0.2s;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
     }
 
     .close-btn:hover {
+      background: #f1f5f9;
       color: #334155;
     }
 
-    .modal-header {
+    .tab-container {
+      padding: 0 24px 16px;
+    }
+
+    .tabs {
       display: flex;
-      border-bottom: 2px solid #e2e8f0;
-      margin-bottom: 30px;
+      background: #f1f5f9;
+      border-radius: 16px;
+      padding: 4px;
     }
 
     .tab {
       flex: 1;
-      padding: 16px;
       text-align: center;
+      padding: 12px 0;
       font-weight: 600;
-      cursor: pointer;
+      font-size: 16px;
       color: #64748b;
-      transition: all 0.2s ease;
-      font-size: 17px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
     .tab.active {
+      background: white;
       color: #3b82f6;
-      border-bottom: 4px solid #3b82f6;
-    }
-
-    .tab:hover {
-      background-color: #f0f9ff;
-      color: #3b82f6;
+      box-shadow: 0 2px 6px rgba(59, 130, 246, 0.2);
     }
 
     .tab-content {
       display: none;
+      padding: 0 24px 24px;
+      overflow-y: auto;
+      flex: 1;
     }
 
     .tab-content.active {
@@ -447,7 +564,7 @@
     }
 
     .form-group {
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .form-group label {
@@ -455,41 +572,69 @@
       margin-bottom: 8px;
       font-weight: 600;
       color: #334155;
-      font-size: 16px;
+      font-size: 15px;
     }
 
-    .form-group input,
-    .form-group textarea {
+    .input-with-icon {
+      position: relative;
+    }
+
+    .input-with-icon svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      width: 18px;
+      height: 18px;
+    }
+
+    .form-input {
       width: 100%;
-      padding: 14px;
+      padding: 14px 14px 14px 44px;
       border: 2px solid #e2e8f0;
-      border-radius: 12px;
+      border-radius: 16px;
       font-size: 16px;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    .form-group input:focus,
-    .form-group textarea:focus {
+    .form-input:focus {
       outline: none;
       border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
     }
 
     .role-group {
-      display: flex;
-      gap: 20px;
-      margin: 24px 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
     }
 
     .role-option {
-      flex: 1;
-      padding: 20px;
+      padding: 16px;
       border: 2px solid #e2e8f0;
       border-radius: 16px;
       text-align: center;
       cursor: pointer;
       transition: all 0.2s ease;
-      font-size: 16px;
-      font-weight: 500;
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
     }
 
     .role-option:hover {
@@ -499,9 +644,13 @@
 
     .role-option.selected {
       border-color: #3b82f6;
-      background-color: #f0f9ff;
-      font-weight: 600;
+      background-color: #eff6ff;
       color: #3b82f6;
+    }
+
+    .role-option svg {
+      width: 24px;
+      height: 24px;
     }
 
     .role-option input {
@@ -511,31 +660,35 @@
     .checkbox-group {
       display: flex;
       align-items: flex-start;
-      gap: 12px;
-      margin: 24px 0;
+      gap: 10px;
+      margin: 20px 0;
     }
 
     .checkbox-group input {
       margin-top: 4px;
-      width: 18px;
-      height: 18px;
     }
 
     .checkbox-group label {
-      font-size: 15px;
+      font-size: 14px;
+      color: #64748b;
       line-height: 1.5;
+    }
+
+    .checkbox-group a {
+      color: #3b82f6;
+      font-weight: 600;
     }
 
     .error {
       color: #ef4444;
-      font-size: 14px;
+      font-size: 13px;
       margin-top: 6px;
     }
 
     .terms-text {
       text-align: center;
       margin-top: 20px;
-      font-size: 14px;
+      font-size: 13px;
       color: #64748b;
     }
 
@@ -716,7 +869,77 @@
       opacity: 1;
     }
 
-    /* ===== RESPONSIVE ===== */
+    /* ===== MOBILE COMPACT MODAL ===== */
+    @media (max-width: 768px) {
+      .modal {
+        max-width: 95%;
+        border-radius: 20px;
+      }
+
+      .modal-header-top h2 {
+        font-size: 22px;
+      }
+
+      .tab {
+        padding: 10px 0;
+        font-size: 15px;
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      .form-group label {
+        font-size: 14px;
+        margin-bottom: 6px;
+      }
+
+      .form-input {
+        padding: 12px 12px 12px 40px;
+        font-size: 15px;
+        border-radius: 14px;
+      }
+
+      .role-group {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .role-option {
+        padding: 14px;
+        font-size: 14px;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .modal {
+        margin: 10px 0;
+      }
+
+      .modal-header-top {
+        padding: 20px;
+      }
+
+      .tab-container {
+        padding: 0 20px 12px;
+      }
+
+      .tab-content {
+        padding: 0 20px 20px;
+      }
+
+      .role-option svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    /* ===== OTHER RESPONSIVE ===== */
     @media (max-width: 900px) {
       .desktop-nav,
       .sign-in-btn.desktop {
@@ -748,9 +971,6 @@
       section {
         padding: 80px 0;
       }
-      .role-group {
-        flex-direction: column;
-      }
     }
 
     @media (max-width: 480px) {
@@ -762,9 +982,6 @@
       }
       .hero h1 {
         font-size: 34px;
-      }
-      .modal {
-        padding: 30px 20px;
       }
     }
 
@@ -893,106 +1110,152 @@
   <!-- AUTH MODAL -->
   <div id="authModal" class="modal-overlay">
     <div class="modal">
-      <button class="close-btn">&times;</button>
-      
-      <div class="modal-header">
-        <div class="tab active" data-tab="signin">Sign In</div>
-        <div class="tab" data-tab="signup">Create Account</div>
+      <!-- Left Branding (hidden on mobile) -->
+      <div class="modal-left">
+        <div>
+          <h3>Join Studevo Today</h3>
+          <p>Connect with opportunities that shape your future.</p>
+        </div>
+        <ul>
+          <li>Easy registration</li>
+          <li>Verified organizations</li>
+          <li>24/7 support</li>
+        </ul>
       </div>
 
-      <!-- SIGN IN -->
-      <div id="signin" class="tab-content active">
-        <form id="signinForm">
-          <div class="form-group">
-            <label for="signinEmail">Email</label>
-            <input type="email" id="signinEmail" name="email" placeholder="you@example.com" required>
+      <!-- Right Form -->
+      <div class="modal-right">
+        <div class="modal-header-top">
+          <div>
+            <h2 id="modalTitle">Sign In</h2>
+            <p id="modalSubtitle">Welcome back! Please enter your details.</p>
           </div>
-          <div class="form-group">
-            <label for="signinPassword">Password</label>
-            <input type="password" id="signinPassword" name="password" placeholder="••••••••" required>
-          </div>
-          <button type="submit" class="btn" style="width:100%;">Sign In</button>
-        </form>
-      </div>
+          <button class="close-btn">&times;</button>
+        </div>
 
-      <!-- SIGN UP -->
-      <div id="signup" class="tab-content">
-        <form id="signupForm">
-          <div class="form-group">
-            <label>Register as:</label>
-            <div class="role-group">
-              <div class="role-option" data-value="student">
-                <input type="radio" name="role" value="student">
-                Student
+        <div class="tab-container">
+          <div class="tabs">
+            <div class="tab active" data-tab="signin">Sign In</div>
+            <div class="tab" data-tab="signup">Sign Up</div>
+          </div>
+        </div>
+
+        <div class="tab-content active" id="signin">
+          <form id="signinForm">
+            <div class="form-group">
+              <label for="signinEmail">Email</label>
+              <div class="input-with-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                <input type="email" id="signinEmail" class="form-input" placeholder="you@example.com" required>
               </div>
-              <div class="role-option" data-value="organization">
-                <input type="radio" name="role" value="organization">
-                Organization / University
+            </div>
+            <div class="form-group">
+              <label for="signinPassword">Password</label>
+              <div class="input-with-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <input type="password" id="signinPassword" class="form-input" placeholder="••••••••" required>
               </div>
             </div>
-          </div>
+            <button type="submit" class="btn" style="width:100%;">Sign In</button>
+          </form>
+        </div>
 
-          <!-- STUDENT FIELDS -->
-          <div id="studentFields">
+        <div class="tab-content" id="signup">
+          <form id="signupForm">
             <div class="form-group">
-              <label for="firstName">First Name</label>
-              <input type="text" id="firstName" name="firstName" placeholder="Enter your first name">
+              <label>Register as:</label>
+              <div class="role-group">
+                <div class="role-option selected" data-value="student">
+                  <input type="radio" name="role" value="student" checked>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12a4 4 0 100-8 4 4 0 000 8z"/>
+                    <path d="M12 14c-4.97 0-9 3.31-9 8v2h18v-2c0-4.69-4.03-8-9-8z"/>
+                  </svg>
+                  Student
+                </div>
+                <div class="role-option" data-value="organization">
+                  <input type="radio" name="role" value="organization">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 10V8a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+                    <path d="M12 2v4"/>
+                    <path d="M12 22v-4"/>
+                    <path d="M4 12H2"/>
+                    <path d="M22 12h-2"/>
+                  </svg>
+                  Organization
+                </div>
+              </div>
             </div>
-            <div class="form-group">
-              <label for="lastName">Last Name</label>
-              <input type="text" id="lastName" name="lastName" placeholder="Enter your last name">
-            </div>
-            <div class="form-group">
-              <label for="signupEmail">Email</label>
-              <input type="email" id="signupEmail" name="email" placeholder="you@example.com">
-            </div>
-            <div class="form-group">
-              <label for="phone">Phone</label>
-              <input type="tel" id="phone" name="phone" placeholder="+995 ...">
-            </div>
-            <div class="form-group">
-              <label for="signupPassword">Password</label>
-              <input type="password" id="signupPassword" name="password" placeholder="Create a password">
-            </div>
-            <div class="form-group">
-              <label for="confirmPassword">Confirm Password</label>
-              <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password">
-              <div id="passwordError" class="error"></div>
-            </div>
-          </div>
 
-          <!-- ORGANIZATION FIELDS -->
-          <div id="orgFields" style="display:none;">
-            <div class="form-group">
-              <label for="orgName">Organization Name</label>
-              <input type="text" id="orgName" name="orgName" placeholder="e.g. Tbilisi State University">
-            </div>
-            <div class="form-group">
-              <label for="orgEmail">Email</label>
-              <input type="email" id="orgEmail" name="email" placeholder="official@org.edu.ge">
-            </div>
-            <div class="form-group">
-              <label for="orgPassword">Password</label>
-              <input type="password" id="orgPassword" name="password" placeholder="Create a password">
-            </div>
-            <div class="form-group">
-              <label for="orgConfirmPassword">Confirm Password</label>
-              <input type="password" id="orgConfirmPassword" name="confirmPassword" placeholder="Confirm your password">
-              <div id="orgPasswordError" class="error"></div>
-            </div>
-            <div class="checkbox-group">
-              <input type="checkbox" id="orgTerms" name="orgTerms">
-              <label for="orgTerms">I confirm this is an official account and agree to <a href="#terms">Terms</a>.</label>
-            </div>
-          </div>
+            <div id="studentFields">
+  <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    <div>
+      <label for="firstName">First Name</label>
+      <input type="text" id="firstName" name="firstName" class="form-input" placeholder="first name" required>
+    </div>
+    <div>
+      <label for="lastName">Last Name</label>
+      <input type="text" id="lastName" name="lastName" class="form-input" placeholder="last name" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="signupEmail">Email</label>
+    <div class="input-with-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+        <polyline points="22,6 12,13 2,6"></polyline>
+      </svg>
+      <input type="email" id="signupEmail" class="form-input" placeholder="you@example.com" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="phone">Phone</label>
+    <div class="input-with-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M3 6a3 3 0 013-3h12a3 3 0 013 3v12a3 3 0 01-3 3H6a3 3 0 01-3-3V6z"/>
+        <path d="M8 12h8"/>
+        <path d="M12 8v8"/>
+      </svg>
+      <input type="tel" id="phone" class="form-input" placeholder="+995 ...">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="signupPassword">Password</label>
+    <div class="input-with-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+      <input type="password" id="signupPassword" class="form-input" placeholder="Create a password" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="confirmPassword">Confirm Password</label>
+    <div class="input-with-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+      <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm your password" required>
+    </div>
+    <div id="passwordError" class="error"></div>
+  </div>
+</div>
 
-          <button type="submit" class="btn" style="width:100%;">Create Account</button>
-        </form>
+            <button type="submit" class="btn" style="width:100%;">Create Account</button>
+          </form>
+        </div>
+
+        <p class="terms-text">
+          By continuing, you agree to our <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a>.
+        </p>
       </div>
-
-      <p class="terms-text">
-        By continuing, you agree to our <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a>.
-      </p>
     </div>
   </div>
 
@@ -1010,7 +1273,7 @@
       </div>
 
       <div class="email-modal-body">
-        <div class="email-contact-item" onclick="copyToClipboard('contact@studevo.com', 'Email')">
+        <div class="email-contact-item" onclick="copyToClipboard('studevo.ge@gmail.com', 'Email')">
           <svg class="email-contact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
           </svg>
@@ -1067,6 +1330,8 @@
     const closeModalBtn = document.querySelector('.close-btn');
     const tabs = document.querySelectorAll('.tab');
     const tabContents = document.querySelectorAll('.tab-content');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalSubtitle = document.getElementById('modalSubtitle');
 
     openModalBtns.forEach(btn => {
       btn.addEventListener('click', e => {
@@ -1082,26 +1347,25 @@
       tab.addEventListener('click', () => {
         tabs.forEach(t => t.classList.remove('active'));
         tabContents.forEach(c => c.classList.remove('active'));
+        
         tab.classList.add('active');
-        document.getElementById(tab.dataset.tab).classList.add('active');
+        const target = document.getElementById(tab.dataset.tab);
+        target.classList.add('active');
+        
+        if (tab.dataset.tab === 'signin') {
+          modalTitle.textContent = 'Sign In';
+          modalSubtitle.textContent = 'Welcome back! Please enter your details.';
+        } else {
+          modalTitle.textContent = 'Create Account';
+          modalSubtitle.textContent = 'Get started with your free account.';
+        }
       });
     });
 
-    // ===== ROLE SELECTION & DYNAMIC REQUIRED =====
+    // ===== ROLE SELECTION =====
     const roleOptions = document.querySelectorAll('.role-option');
     const studentFields = document.getElementById('studentFields');
     const orgFields = document.getElementById('orgFields');
-
-    function setRequired(groupElement, isRequired) {
-      const inputs = groupElement.querySelectorAll('input');
-      inputs.forEach(input => {
-        if (isRequired) {
-          input.setAttribute('required', 'required');
-        } else {
-          input.removeAttribute('required');
-        }
-      });
-    }
 
     roleOptions.forEach(option => {
       option.addEventListener('click', () => {
@@ -1112,22 +1376,24 @@
         if (option.dataset.value === 'student') {
           studentFields.style.display = 'block';
           orgFields.style.display = 'none';
-          setRequired(studentFields, true);
-          setRequired(orgFields, false);
+          // Set required on student inputs
+          studentFields.querySelectorAll('input').forEach(el => el.setAttribute('required', 'required'));
+          orgFields.querySelectorAll('input').forEach(el => el.removeAttribute('required'));
         } else {
           studentFields.style.display = 'none';
           orgFields.style.display = 'block';
-          setRequired(studentFields, false);
-          setRequired(orgFields, true);
+          orgFields.querySelectorAll('input').forEach(el => el.setAttribute('required', 'required'));
+          studentFields.querySelectorAll('input').forEach(el => el.removeAttribute('required'));
         }
       });
     });
 
-    document.querySelector('.role-option[data-value="student"]').click();
-
     // ===== PASSWORD VALIDATION =====
     function validatePasswords() {
-      const role = document.querySelector('input[name="role"]:checked')?.value;
+      const roleInput = document.querySelector('input[name="role"]:checked');
+      if (!roleInput) return true;
+
+      const role = roleInput.value;
       if (role === 'student') {
         const pass = document.getElementById('signupPassword').value;
         const confirm = document.getElementById('confirmPassword').value;
@@ -1138,7 +1404,7 @@
         }
         err.textContent = "";
         return true;
-      } else if (role === 'organization') {
+      } else {
         const pass = document.getElementById('orgPassword').value;
         const confirm = document.getElementById('orgConfirmPassword').value;
         const err = document.getElementById('orgPasswordError');
@@ -1149,7 +1415,6 @@
         err.textContent = "";
         return true;
       }
-      return true;
     }
 
     // ===== SIGN IN FORM =====
@@ -1158,7 +1423,6 @@
       const email = document.getElementById('signinEmail').value.trim();
       const password = document.getElementById('signinPassword').value;
       try {
-        // ✅ FIXED: Use relative path — works on localhost AND Render
         const res = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1199,12 +1463,11 @@
       let payload;
 
       if (role === 'student') {
-        const firstName = document.getElementById('firstName').value.trim();
-        const lastName = document.getElementById('lastName').value.trim();
+        const fullName = document.getElementById('fullName').value.trim();
         const email = document.getElementById('signupEmail').value.trim();
         const phone = document.getElementById('phone').value.trim();
         const password = document.getElementById('signupPassword').value;
-        payload = { role, firstName, lastName, email, phone, password };
+        payload = { role, fullName, email, phone, password };
       } else {
         const orgName = document.getElementById('orgName').value.trim();
         const email = document.getElementById('orgEmail').value.trim();
@@ -1218,7 +1481,6 @@
       }
 
       try {
-        // ✅ FIXED: Use relative path — works on localhost AND Render
         const res = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1226,7 +1488,8 @@
         });
         const data = await res.json();
         if (res.ok) {
-          window.location.href = 'index.html';
+          alert('Account created successfully!');
+          modal.style.display = 'none';
         } else {
           alert('Registration failed: ' + (data.error || 'Unknown error'));
         }
@@ -1257,18 +1520,17 @@
       });
     }
 
-    // Close modal when clicking the overlay
     document.getElementById('emailContactModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeEmailModal();
-      }
+      if (e.target === this) closeEmailModal();
     });
 
-    // Close on Escape key
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         if (document.getElementById('emailContactModal').classList.contains('active')) {
           closeEmailModal();
+        }
+        if (modal.style.display === 'flex') {
+          modal.style.display = 'none';
         }
       }
     });
